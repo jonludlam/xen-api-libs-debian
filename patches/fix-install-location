@@ -1,0 +1,253 @@
+--- a/cdrom/Makefile
++++ b/cdrom/Makefile
+@@ -39,7 +39,7 @@
+ 	sed 's/@VERSION@/$(VERSION)/g' < $< > $@
+ 
+ .PHONY: install
+-install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
++install: path = $(DESTDIR)$(shell ocamlc -where)
+ install: $(LIBS) META
+ 	mkdir -p $(path)
+ 	ocamlfind install -destdir $(path) -ldconf ignore cdrom META $(INTF) $(LIBS) *.a *.so *.cmx $(SPOT)
+--- a/close-and-exec/Makefile
++++ b/close-and-exec/Makefile
+@@ -40,7 +40,7 @@
+ 	sed 's/@VERSION@/$(VERSION)/g' < $< > $@
+ 
+ .PHONY: install
+-install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
++install: path = $(DESTDIR)$(shell ocamlc -where)
+ install: $(LIBS) META
+ 	mkdir -p $(path)
+ 	ocamlfind install -destdir $(path) -ldconf ignore close-and-exec META $(INTF) $(LIBS) *.a *.cmx $(SPOT)
+--- a/cpuid/Makefile
++++ b/cpuid/Makefile
+@@ -41,7 +41,7 @@
+ 	sed 's/@VERSION@/$(VERSION)/g' < $< > $@
+ 
+ .PHONY: install
+-install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
++install: path = $(DESTDIR)$(shell ocamlc -where)
+ install: $(LIBS) META
+ 	mkdir -p $(path)
+ 	ocamlfind install -destdir $(path) -ldconf ignore cpuid META $(INTF) $(LIBS) *.a *.so *.cmx $(SPOT)
+--- a/http-svr/Makefile
++++ b/http-svr/Makefile
+@@ -32,7 +32,7 @@
+ 	sed 's/@VERSION@/$(VERSION)/g' < $< > $@
+ 
+ .PHONY: install
+-install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
++install: path = $(DESTDIR)$(shell ocamlc -where)
+ install: $(LIBS) META
+ 	mkdir -p $(path)
+ 	ocamlfind install -destdir $(path) -ldconf ignore http-svr META $(INTF) $(LIBS) *.a *.cmx $(SPOT)
+--- a/log/Makefile
++++ b/log/Makefile
+@@ -47,7 +47,7 @@
+ debug.cmi: logs.cmi
+ 
+ .PHONY: install
+-install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
++install: path = $(DESTDIR)$(shell ocamlc -where)
+ install: $(LIBS) META
+ 	mkdir -p $(path)
+ 	ocamlfind install -destdir $(path) -ldconf ignore log META $(INTF) $(LIBS) *.a *.so *.cmx $(SPOT)
+--- a/mlvm/Makefile
++++ b/mlvm/Makefile
+@@ -3,7 +3,7 @@
+ LIBOBJS = constants lvm_uuid crc utils tag absty lvmconfigparser lvmconfiglex lvmmarshal allocator debug redo lv pv vg
+ INTF = $(foreach obj, $(LIBOBJS),$(obj).cmi)
+ CMDOBJS = messages.cmx mlvm.cmx
+-COMPFLAG = -dtypes -g -I ../stdext -I ../camldm -I ../uuid -for-pack Lvm $(RPCLIGHTFLAGS)
++COMPFLAG = -package uuid -dtypes -g -I ../stdext -I ../camldm -for-pack Lvm $(RPCLIGHTFLAGS)
+ 
+ LIBS = lvm.cma lvm.cmxa
+ 
+@@ -29,7 +29,7 @@
+ 
+ .PHONY: install
+ install: $(LIBS) META
+-	ocamlfind install -destdir $(DESTDIR)$(shell ocamlfind printconf destdir) -ldconf ignore lvm META lvm.cmi lvm.cmxa lvm.cma lvm.a $(SPOT)
++	ocamlfind install -destdir $(DESTDIR)$(shell ocamlc -where) -ldconf ignore lvm META lvm.cmi lvm.cmxa lvm.cma lvm.a $(SPOT)
+ 
+ .PHONY: uninstall
+ uninstall:
+--- a/netdev/Makefile
++++ b/netdev/Makefile
+@@ -41,7 +41,7 @@
+ 	sed 's/@VERSION@/$(VERSION)/g' < $< > $@
+ 
+ .PHONY: install
+-install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
++install: path = $(DESTDIR)$(shell ocamlc -where)
+ install: $(LIBS) META
+ 	mkdir -p $(path)
+ 	ocamlfind install -destdir $(path) -ldconf ignore netdev META $(INTF) $(LIBS) *.a *.so *.cmx $(SPOT)
+--- a/pciutil/Makefile
++++ b/pciutil/Makefile
+@@ -40,13 +40,13 @@
+ 	sed 's/@VERSION@/$(VERSION)/g' < $< > $@
+ 
+ .PHONY: install
+-install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
++install: path = $(DESTDIR)$(shell ocamlc -where)
+ install: $(LIBS) META
+ 	mkdir -p $(path)
+ 	ocamlfind install -destdir $(path) -ldconf ignore pciutil META $(INTF) $(LIBS) *.a *.cmx $(SPOT)
+ 
+ .PHONY: bininstall
+-bininstall: path = $(DESTDIR)$(LIBEXEC)
++bininstall: path = $(DESTDIR)$(BINDIR)
+ bininstall: all
+ 	mkdir -p $(path)
+ 	$(IPROG) $(PROGRAMS) $(path)
+@@ -57,7 +57,7 @@
+ 
+ .PHONY: binuninstall
+ binuninstall:
+-	rm -f $(DESTDIR)$(LIBEXEC)$(PROGRAMS)
++	rm -f $(DESTDIR)$(BINDIR)$(PROGRAMS)
+ 
+ .PHONY: doc
+ doc: $(INTF)
+--- a/rpc-light/Makefile
++++ b/rpc-light/Makefile
+@@ -41,7 +41,7 @@
+ 	$(OCAMLOPT) $(OCAMLFLAGS) -package $(PACKS) -c -o $@ $<
+ 
+ .PHONY: install
+-install: INSTALL_PATH = $(DESTDIR)$(shell ocamlfind printconf destdir)
++install: INSTALL_PATH = $(DESTDIR)$(shell ocamlc -where)
+ install: all
+ 	ocamlfind install -destdir $(INSTALL_PATH) rpc-light META $(TARGETS) $(SPOT)
+ 
+--- a/rss/Makefile
++++ b/rss/Makefile
+@@ -37,7 +37,7 @@
+ 	sed 's/@VERSION@/$(VERSION)/g' < $< > $@
+ 
+ .PHONY: install
+-install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
++install: path = $(DESTDIR)$(shell ocamlc -where)
+ install: $(LIBS) META
+ 	mkdir -p $(path)
+ 	ocamlfind install -destdir $(path) -ldconf ignore rss META $(INTF) $(LIBS) *.a *.cmx $(SPOT)
+--- a/sexpr/Makefile
++++ b/sexpr/Makefile
+@@ -52,7 +52,7 @@
+ 	sed 's/@VERSION@/$(VERSION)/g' < $< > $@
+ 
+ .PHONY: install
+-install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
++install: path = $(DESTDIR)$(shell ocamlc -where)
+ install: $(LIBS) META
+ 	mkdir -p $(path)
+ 	ocamlfind install -destdir $(path) -ldconf ignore sexpr META $(INTF) $(LIBS) *.a *.cmx $(SPOT)
+--- a/stdext/Makefile
++++ b/stdext/Makefile
+@@ -147,7 +147,7 @@
+ 	sed 's/@VERSION@/$(VERSION)/g' < $< > $@
+ 
+ .PHONY: install
+-install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
++install: path = $(DESTDIR)$(shell ocamlc -where)
+ install: $(LIBS) META
+ 	mkdir -p $(path)
+ 	ocamlfind install -destdir $(path) -ldconf ignore stdext META $(INTF) $(LIBS) *.a *.so *.cmx $(SPOT)
+--- a/stunnel/Makefile
++++ b/stunnel/Makefile
+@@ -35,7 +35,7 @@
+ 	sed 's/@VERSION@/$(VERSION)/g' < $< > $@
+ 
+ .PHONY: install
+-install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
++install: path = $(DESTDIR)$(shell ocamlc -where)
+ install: $(LIBS) META
+ 	mkdir -p $(path)
+ 	ocamlfind install -destdir $(path) -ldconf ignore stunnel META $(INTF) $(LIBS) *.a *.cmx $(SPOT)
+--- a/tapctl/Makefile
++++ b/tapctl/Makefile
+@@ -36,7 +36,7 @@
+ 	sed 's/@VERSION@/$(VERSION)/g' < $< > $@
+ 
+ .PHONY: install
+-install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
++install: path = $(DESTDIR)$(shell ocamlc -where)
+ install: $(LIBS) META
+ 	mkdir -p $(path)
+ 	ocamlfind install -destdir $(path) -ldconf ignore tapctl META $(INTF) $(LIBS) *.a *.cmx $(SPOT)
+--- a/udev/Makefile
++++ b/udev/Makefile
+@@ -44,7 +44,7 @@
+ 	sed 's/@VERSION@/$(VERSION)/g' < $< > $@
+ 
+ .PHONY: install
+-install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
++install: path = $(DESTDIR)$(shell ocamlc -where)
+ install: $(LIBS) META
+ 	mkdir -p $(path)
+ 	ocamlfind install -destdir $(path) -ldconf ignore udev META $(INTF) $(LIBS) *.a *.so *.cmx $(SPOT)
+--- a/vhd/Makefile
++++ b/vhd/Makefile
+@@ -49,7 +49,7 @@
+ 
+ .PHONY: install
+ install: $(LIBS) META
+-	ocamlfind install -destdir $(DESTDIR)$(shell ocamlfind printconf destdir) -ldconf ignore vhd META $(INTF) $(LIBS) *.a *.so *.cmx $(SPOT)
++	ocamlfind install -destdir $(DESTDIR)$(shell ocamlc -where) -ldconf ignore vhd META $(INTF) $(LIBS) *.a *.so *.cmx $(SPOT)
+ 
+ .PHONY: uninstall
+ uninstall:
+--- a/xen-utils/Makefile
++++ b/xen-utils/Makefile
+@@ -38,7 +38,7 @@
+ 	sed 's/@VERSION@/$(VERSION)/g' < $< > $@
+ 
+ .PHONY: install
+-install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
++install: path = $(DESTDIR)$(shell ocamlc -where)
+ install: $(LIBS) META
+ 	mkdir -p $(path)
+ 	ocamlfind install -destdir $(path) -ldconf ignore xen-utils META $(INTF) $(LIBS) *.a *.cmx $(SPOT)
+--- a/xml-light2/Makefile
++++ b/xml-light2/Makefile
+@@ -42,7 +42,7 @@
+ 	sed 's/@VERSION@/$(VERSION)/g' < $< > $@
+ 
+ .PHONY: install
+-install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
++install: path = $(DESTDIR)$(shell ocamlc -where)
+ install: $(LIBS) META
+ 	mkdir -p $(path)
+ 	ocamlfind install -destdir $(path) -ldconf ignore xml-light2 META $(INTF) $(LIBS) *.a *.cmx $(SPOT)
+--- a/xsrpc/Makefile
++++ b/xsrpc/Makefile
+@@ -35,7 +35,7 @@
+ 	sed 's/@VERSION@/$(VERSION)/g' < $< > $@
+ 
+ .PHONY: install
+-install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
++install: path = $(DESTDIR)$(shell ocamlc -where)
+ install: $(LIBS) META
+ 	mkdir -p $(path)
+ 	ocamlfind install -destdir $(path) -ldconf ignore xsrpc META $(INTF) $(LIBS) *.a *.cmx $(SPOT)
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -4,6 +4,7 @@
+ HAVE_LINUX_CDROM = @LINUX_CDROM@
+ HAVE_XMLM = @OCAML_PKG_xmlm@
+ HAVE_TYPECONV = @OCAML_PKG_type_conv@
++STUBLIBDIR = $(DESTDIR)$(shell ocamlc -where)/stublibs
+ 
+ include config.mk
+ 
+--- a/config.mk.in
++++ b/config.mk.in
+@@ -33,5 +33,6 @@
+ DOCDIR = ../doc
+ 
+ LIBEXEC = "/opt/xensource/libexec"
++BINDIR = "/usr/bin"
+ 
+ SPOT=$(wildcard *.sp?t)
