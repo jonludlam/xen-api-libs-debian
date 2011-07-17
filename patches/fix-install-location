@@ -251,3 +251,14 @@
 +BINDIR = "/usr/bin"
  
  SPOT=$(wildcard *.sp?t)
+--- a/camldm/Makefile
++++ b/camldm/Makefile
+@@ -41,7 +41,7 @@
+ 	sed 's/@VERSION@/$(VERSION)/g' < $< > $@
+ 
+ .PHONY: install
+-install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
++install: path = $(DESTDIR)$(shell ocamlc -where)
+ install: $(LIBS) META
+ 	mkdir -p $(path)
+ 	ocamlfind install -destdir $(path) -ldconf ignore camldm META $(INTF) $(LIBS) *.a *.so *.cmx $(SPOT)
