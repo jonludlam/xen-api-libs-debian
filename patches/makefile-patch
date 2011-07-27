@@ -27,7 +27,16 @@
  ifeq ($(HAVE_XEN),1)
  	$(MAKE) -C netdev
  	$(MAKE) -C xsrpc
-@@ -167,7 +168,7 @@
+@@ -49,7 +50,7 @@
+ 	$(MAKE) -C tapctl
+ endif
+ 
+-install: $(STUBLIBDIR)
++install: $(STUBLIBDIR) installxen bininstall
+ 	$(MAKE) -C stdext install
+ 	$(MAKE) -C log install
+ 	$(MAKE) -C stunnel install
+@@ -166,7 +167,7 @@
  	$(MAKE) -C xen-utils doc
  
  .PHONY: clean
@@ -36,7 +45,7 @@
  	$(MAKE) -C camldm clean
  	$(MAKE) -C stdext clean
  	$(MAKE) -C log clean
-@@ -193,6 +194,10 @@
+@@ -192,6 +193,10 @@
  	$(MAKE) -C vhd clean
  	$(MAKE) -C tapctl clean
  
