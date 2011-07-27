@@ -1,0 +1,45 @@
+commit 349615fd74abc4fc1f878d5da1ef6b8e52e1a4bc
+Author: Mike McClurg <mike.mcclurg@citrix.com>
+Date:   Fri Jul 1 15:10:41 2011 +0100
+
+    xsrpc/Makefile properly calls ocamlc after Makefile consolidation
+    
+    Signed-off-by: Mike McClurg <mike.mcclurg@citrix.com>
+
+diff --git a/xsrpc/Makefile b/xsrpc/Makefile
+index dda80c1..93b774c 100644
+--- a/xsrpc/Makefile
++++ b/xsrpc/Makefile
+@@ -1,13 +1,11 @@
+ include ../config.mk
+ 
+-
+-
+-
+-
+ OBJS = xsrpc
+ INTF = xsrpc.cmi
+ LIBS = xsrpc.cma xsrpc.cmxa
+ 
++OCAMLOPTFLAGS += $(OCAML_XB_INC) $(OCAML_XS_INC)
++OCAMLCFLAGS += $(OCAML_XB_INC) $(OCAML_XS_INC)
+ 
+ all: $(INTF) $(LIBS) $(PROGRAMS)
+ 
+@@ -19,13 +17,13 @@ xsrpc.cmxa: $(foreach obj,$(OBJS),$(obj).cmx)
+ 	$(OCAMLOPT) $(OCAMLOPTFLAGS) -a -o $@ $(foreach obj,$(OBJS),$(obj).cmx)
+ 
+ xsrpc.cma: $(foreach obj,$(OBJS),$(obj).cmo)
+-	$(OCAMLC) -a -o $@ $(foreach obj,$(OBJS),$(obj).cmo)
++	$(OCAMLC) $(OCAMLCFLAGS) -a -o $@ $(foreach obj,$(OBJS),$(obj).cmo)
+ 
+ %.cmo: %.ml
+-	$(OCAMLC) -c -o $@ $<
++	$(OCAMLC) $(OCAMLCFLAGS) -c -o $@ $<
+ 
+ %.cmi: %.mli
+-	$(OCAMLC) -c -o $@ $<
++	$(OCAMLC) $(OCAMLCFLAGS) -c -o $@ $<
+ 
+ %.cmx: %.ml
+ 	$(OCAMLOPT) $(OCAMLOPTFLAGS) -c -o $@ $<

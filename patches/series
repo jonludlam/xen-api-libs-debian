@@ -1,3 +1,15 @@
+clean-makefiles
+create-stublibs-dir
+check-for-ocamlspotter
+no-get-boot-cpufeatures
+remove-uuid
+upgrade-mlvm
+stdext-improvements
+fix-vhd-build
+ocamlspotter-conditional
+rpc-light-new-type-conv
+xsrpc-build-fix
+more-build-breakage
 makefile-patch
 fix-install-location
 fe-init-script

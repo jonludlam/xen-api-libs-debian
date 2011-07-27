@@ -1,0 +1,809 @@
+   Clean up Makefiles
+    
+    Move common variables into config.mk.in instead of redefining them everywhere.
+    Make sure we use ocamlfind instead of hard-coding paths and things. Update
+    type-conv compiler arguments to allow us to use type-conv 2.3.
+    
+    Signed-off-by: Mike McClurg <mike.mcclurg@citrix.com>
+
+--- a/camldm/Makefile
++++ b/camldm/Makefile
+@@ -1,29 +1,10 @@
+ include ../config.mk
+ 
+-FEPP = camlp4o -I ../rpc-light -I $(shell ocamlfind query type-conv) pa_type_conv.cmo pa_rpc.cma
+-
+-LDFLAGS = -cclib -L./
+-
+-VERSION := $(shell git show-ref --head | grep -E " HEAD$$" | cut -f 1 -d " " || echo 0)
+-OCAMLOPTFLAGS = -g -dtypes
+-
+-OCAMLABI := $(shell ocamlc -version)
+-OCAMLLIBDIR := $(shell ocamlc -where)
+-OCAMLDESTDIR ?= $(OCAMLLIBDIR)
+-
+-CC = gcc
+-CFLAGS = -Wall -fPIC -O2 -I$(OCAMLLIBDIR)
+-OCAMLC = ocamlc -g
+-OCAMLOPT = ocamlopt
+-
+ OBJS = camldm
+ INTF = $(foreach obj, $(OBJS),$(obj).cmi)
+ LIBS = camldm.cma camldm.cmxa
+ 
+-DOCDIR = ../doc
+-
+-OCAMLFLAGS = -pp '${FEPP}' -I ../rpc-light
+-
++OCAMLFLAGS = $(RPCLIGHTFLAGS)
+ 
+ all: $(INTF) $(LIBS) $(PROGRAMS)
+ 
+--- a/cdrom/Makefile
++++ b/cdrom/Makefile
+@@ -1,25 +1,9 @@
+ include ../config.mk
+ 
+-LDFLAGS = -cclib -L./
+-
+-VERSION := $(shell git show-ref --head | grep -E " HEAD$$" | cut -f 1 -d " " || echo 0)
+-OCAMLOPTFLAGS = -g -dtypes
+-
+-OCAMLABI := $(shell ocamlc -version)
+-OCAMLLIBDIR := $(shell ocamlc -where)
+-OCAMLDESTDIR ?= $(OCAMLLIBDIR)
+-
+-CC = gcc
+-CFLAGS = -Wall -fPIC -O2 -I$(OCAMLLIBDIR)
+-OCAMLC = ocamlc -g
+-OCAMLOPT = ocamlopt
+-
+ OBJS = cdrom
+ INTF = $(foreach obj, $(OBJS),$(obj).cmi)
+ LIBS = cdrom.cma cdrom.cmxa
+ 
+-DOCDIR = ../doc
+-
+ all: $(INTF) $(LIBS) $(PROGRAMS)
+ 
+ bins: $(PROGRAMS)
+--- a/close-and-exec/Makefile
++++ b/close-and-exec/Makefile
+@@ -1,20 +1,7 @@
+ include ../config.mk
+ 
+ IPROG=install -m 755 
+-CC = gcc
+-CFLAGS = -Wall -fPIC -O2 -I/opt/xensource/lib/ocaml
+-OCAMLC = ocamlc -g
+-OCAMLOPT = ocamlopt
+-
+-LDFLAGS = -cclib -L./
+-
+-LIBEXEC  = "/opt/xensource/libexec"
+-VERSION := $(shell git show-ref --head | grep -E " HEAD$$" | cut -f 1 -d " " || echo 0)
+-OCAMLOPTFLAGS = -g -dtypes
+-
+-OCAMLABI := $(shell ocamlc -version)
+-OCAMLLIBDIR := $(shell ocamlc -where)
+-OCAMLDESTDIR ?= $(OCAMLLIBDIR)
++
+ 
+ OBJS = closeandexec
+ INTF = $(foreach obj, $(OBJS),$(obj).cmi)
+@@ -22,8 +9,6 @@
+ 
+ PROGRAMS = closeandexec
+ 
+-DOCDIR = ../doc
+-
+ all: $(INTF) $(LIBS)
+ 
+ bins: $(PROGRAMS)
+--- a/config.mk.in
++++ b/config.mk.in
+@@ -11,3 +11,25 @@
+ OCAML_XS_INC = -I $(OCAML_XS_DIR)
+ OCAML_XS_LIB = $(OCAML_XS_DIR)/xs.cmxa
+ 
++LDFLAGS = -cclib -L./
++
++VERSION := 0.2
++VERSION ?= $(shell git show-ref --head -s origin/HEAD || echo 0)
++
++OCAMLABI := $(shell ocamlc -version)
++OCAMLLIBDIR := $(shell ocamlc -where)
++OCAMLDESTDIR ?= $(OCAMLLIBDIR)
++
++CC = gcc
++CFLAGS = -Wall -fPIC -O2 -I$(OCAMLLIBDIR)
++OCAMLC = ocamlfind ocamlc
++OCAMLOPT = ocamlfind ocamlopt
++OCAMLYACC = ocamlyacc
++OCAMLCFLAGS = -dtypes
++OCAMLOPTFLAGS = -g -dtypes
++
++RPCLIGHTFLAGS = -package type-conv -ppopt -I -ppopt ../rpc-light -ppopt pa_rpc.cma -syntax camlp4o -I ../rpc-light
++
++DOCDIR = ../doc
++
++LIBEXEC = "/opt/xensource/libexec"
+\ No newline at end of file
+--- a/cpuid/Makefile
++++ b/cpuid/Makefile
+@@ -1,26 +1,11 @@
+ include ../config.mk
+ 
+-OCAMLABI := $(shell ocamlc -version)
+-OCAMLLIBDIR := $(shell ocamlc -where)
+-OCAMLDESTDIR ?= $(OCAMLLIBDIR)
+-
+-CC = gcc
+-CFLAGS = -Wall -fPIC -O2 -I$(OCAMLLIBDIR) -I$(XEN_ROOT)/usr/include
+-OCAMLC = ocamlc -g
+-OCAMLOPT = ocamlopt
+ INCLUDES = -I ../stdext $(OCAML_XC_INC) -I ../xen-utils
+ 
+-LDFLAGS = -cclib -L./
+-
+-VERSION := $(shell git show-ref --head | grep -E " HEAD$$" | cut -f 1 -d " " || echo 0)
+-OCAMLOPTFLAGS = -g -dtypes
+-
+ OBJS = cpuid
+ INTF = $(foreach obj, $(OBJS),$(obj).cmi)
+ LIBS = cpuid.cma cpuid.cmxa
+ 
+-DOCDIR = ../doc
+-
+ all: $(INTF) $(LIBS) $(PROGRAMS)
+ 
+ bins: $(PROGRAMS)
+--- a/forking_executioner/Makefile
++++ b/forking_executioner/Makefile
+@@ -1,22 +1,8 @@
+ include ../config.mk
+ 
+ IPROG=install -m 755
+-CC = gcc
+-CFLAGS = -Wall -fPIC -O2 -I/opt/xensource/lib/ocaml
+-OCAMLC = ocamlc -g
+-OCAMLOPT = ocamlopt
+ 
+-LDFLAGS = -cclib -L./
+-
+-LIBEXEC  = /opt/xensource/libexec
+ INIT_D   = /etc/rc.d/init.d
+-VERSION := $(shell git show-ref --head | grep -E " HEAD$$" | cut -f 1 -d " " || echo 0)
+-OCAMLOPTFLAGS = -g -dtypes
+-
+-OCAMLABI := $(shell ocamlc -version)
+-OCAMLLIBDIR := $(shell ocamlc -where)
+-OCAMLDESTDIR ?= $(OCAMLLIBDIR)
+-
+ 
+ OBJS = 
+ INTF = $(foreach obj, $(OBJS),$(obj).cmi)
+@@ -24,8 +10,6 @@
+ 
+ PROGRAMS = fe
+ 
+-DOCDIR = ../doc
+-
+ all: $(INTF) $(LIBS) $(PROGRAMS)
+ 
+ bins: $(PROGRAMS)
+--- a/http-svr/Makefile
++++ b/http-svr/Makefile
+@@ -1,27 +1,9 @@
+ include ../config.mk
+ 
+-CC = gcc
+-CFLAGS = -Wall -fPIC -O2 -I/opt/xensource/lib/ocaml
+-OCAMLC = ocamlc -g
+-OCAMLOPT = ocamlopt
+-
+-LDFLAGS = -cclib -L./
+-
+-VERSION := $(shell git show-ref --head | grep -E " HEAD$$" | cut -f 1 -d " " || echo 0)
+-OCAMLOPTFLAGS = -g -dtypes
+-
+-PP = camlp4o -I ../rpc-light -I $(shell ocamlfind query type-conv) pa_type_conv.cmo pa_rpc.cma
+-
+-OCAMLABI := $(shell ocamlc -version)
+-OCAMLLIBDIR := $(shell ocamlc -where)
+-OCAMLDESTDIR ?= $(OCAMLLIBDIR)
+-
+ OBJS = server_io buf_io http http_svr http_client
+ INTF = $(foreach obj, $(OBJS),$(obj).cmi)
+ LIBS = http_svr.cma http_svr.cmxa
+ 
+-DOCDIR = ../doc
+-
+ all: $(INTF) $(LIBS)
+ 
+ bins: $(PROGRAMS)
+@@ -35,13 +17,13 @@
+ 	$(OCAMLC) -a -o $@ $(foreach obj,$(OBJS),$(obj).cmo)
+ 
+ %.cmo: %.ml %.cmi
+-	$(OCAMLC) -c -pp '${PP}' -thread -I ../rpc-light -I ../stdext -I ../log -o $@ $<
++	$(OCAMLC) -c $(RPCLIGHTFLAGS) -thread -I ../rpc-light -I ../stdext -I ../log -o $@ $<
+ 
+ %.cmi: %.mli
+ 	$(OCAMLC) -c -I ../rpc-light -thread -o $@ $<
+ 
+ %.cmx: %.ml %.cmi
+-	$(OCAMLOPT) $(OCAMLOPTFLAGS) -pp '${PP}' -c -thread -I ../rpc-light -I ../stdext -I ../log -o $@ $<
++	$(OCAMLOPT) $(OCAMLOPTFLAGS) $(RPCLIGHTFLAGS) -c -thread -I ../rpc-light -I ../stdext -I ../log -o $@ $<
+ 
+ %.o: %.c
+ 	$(CC) $(CFLAGS) -c -o $@ $<
+--- a/log/Makefile
++++ b/log/Makefile
+@@ -1,27 +1,11 @@
+ include ../config.mk
+ 
+-CC = gcc
+-OCAMLLOC := $(shell ocamlc -where)
+-CFLAGS = -Wall -fPIC -O2 -I/opt/xensource/lib/ocaml -I$(OCAMLLOC)
+-OCAMLC = ocamlc
+-OCAMLOPT = ocamlopt 
+-
+-LDFLAGS = -cclib -L./
+-
+-VERSION := $(shell git show-ref --head | grep -E " HEAD$$" | cut -f 1 -d " " || echo 0)
+-OCAMLCFLAGS = -g -dtypes -thread -I ../stdext
+-OCAMLOPTFLAGS = -g -dtypes -thread -I ../stdext
+-
+-
+-OCAMLABI := $(shell ocamlc -version)
+-OCAMLLIBDIR := $(shell ocamlc -where)
+-OCAMLDESTDIR ?= $(OCAMLLIBDIR)
+-
+ OBJS = syslog log logs debug
+ INTF = log.cmi logs.cmi syslog.cmi debug.cmi
+ LIBS = log.cma log.cmxa
+ 
+-DOCDIR = ../doc
++OCAMLCFLAGS += -thread -I ../stdext
++OCAMLOPTFLAGS += -thread -I ../stdext
+ 
+ all: $(INTF) $(LIBS) $(PROGRAMS)
+ 
+--- a/mlvm/Makefile
++++ b/mlvm/Makefile
+@@ -1,30 +1,12 @@
+ include ../config.mk
+ 
+-CC = gcc
+-CFLAGS = -Wall -fPIC -O2 -I/opt/xensource/lib/ocaml
+-LDFLAGS = -cclib -L./
+-VERSION = 0.1
+-
+-PP = camlp4o -I ../rpc-light -I $(shell ocamlfind query type-conv) pa_type_conv.cmo pa_rpc.cma
+-
+-DESTDIR ?= /
+-VERSION := $(shell git show-ref --head | grep -E " HEAD$$" | cut -f 1 -d " " || echo 0)
+-
+-OCAMLABI := $(shell ocamlc -version)
+-OCAMLLIBDIR := $(shell ocamlc -where)
+-OCAMLDESTDIR ?= $(OCAMLLIBDIR)
+-
+ LIBOBJS = constants lvm_uuid crc utils absty lvmconfigparser lvmconfiglex lvmmarshal allocator debug redo lv pv vg 
+ INTF = $(foreach obj, $(LIBOBJS),$(obj).cmi)
+ CMDOBJS = messages.cmx mlvm.cmx
+-OCAMLC = ocamlfind ocamlc -g
+-OCAMLOPT = ocamlfind ocamlopt 
+-COMPFLAG = -dtypes -g -I ../stdext -I ../camldm -I ../uuid -for-pack Lvm -pp '${PP}' -I ../rpc-light
++COMPFLAG = -dtypes -g -I ../stdext -I ../camldm -I ../uuid -for-pack Lvm $(RPCLIGHTFLAGS)
+ 
+ LIBS = lvm.cma lvm.cmxa
+ 
+-DOCDIR = ../doc
+-
+ default : $(LIBS)
+ 
+ test_allocator: default
+--- a/netdev/Makefile
++++ b/netdev/Makefile
+@@ -1,26 +1,11 @@
+ include ../config.mk
+ 
+-CC = gcc
+-CFLAGS = -Wall -fPIC -O2 -I$(shell ocamlc -where)
+-OCAMLC = ocamlc -g
+-OCAMLOPT = ocamlopt
+-
+-LDFLAGS = -cclib -L./
+-
+-VERSION := $(shell git show-ref --head | grep -E " HEAD$$" | cut -f 1 -d " " || echo 0)
+-OCAMLOPTFLAGS = -g -dtypes
+ OCAMLFLAGS = -I ../stdext
+ 
+-OCAMLABI := $(shell ocamlc -version)
+-OCAMLLIBDIR := $(shell ocamlc -where)
+-OCAMLDESTDIR ?= $(OCAMLLIBDIR)
+-
+ OBJS = netdev
+ INTF = $(foreach obj, $(OBJS),$(obj).cmi)
+ LIBS = netdev.cma netdev.cmxa
+ 
+-DOCDIR = ../doc
+-
+ all: $(INTF) $(LIBS) $(PROGRAMS)
+ 
+ bins: $(PROGRAMS)
+--- a/pciutil/Makefile
++++ b/pciutil/Makefile
+@@ -1,27 +1,12 @@
+ include ../config.mk
+ 
+ IPROG=install -m 755
+-CC = gcc
+-CFLAGS = -Wall -fPIC -O2 -I/opt/xensource/lib/ocaml
+-OCAMLC = ocamlc -g
+-OCAMLOPT = ocamlopt
+ 
+-LDFLAGS = -cclib -L./
+-
+-LIBEXEC = "/opt/xensource/libexec"
+-VERSION := $(shell git show-ref --head | grep -E " HEAD$$" | cut -f 1 -d " " || echo 0)
+-OCAMLOPTFLAGS = -g -dtypes
+-
+-OCAMLABI := $(shell ocamlc -version)
+-OCAMLLIBDIR := $(shell ocamlc -where)
+-OCAMLDESTDIR ?= $(OCAMLLIBDIR)
+ 
+ OBJS = pciutil
+ INTF = $(foreach obj, $(OBJS),$(obj).cmi)
+ LIBS = pciutil.cma pciutil.cmxa
+ 
+-DOCDIR = ../doc
+-
+ PROGRAMS = pciutil
+ 
+ all: $(INTF) $(LIBS)
+--- a/rpc-light/Makefile
++++ b/rpc-light/Makefile
+@@ -1,12 +1,9 @@
+ include ../config.mk
+ 
+-OCAMLC = ocamlfind ocamlc
+-OCAMLOPT = ocamlfind ocamlopt
+ OCAMLFLAGS = -annot -g
+ PACKS = xmlm
+ 
+ ICAMLP4 = -I $(shell ocamlfind query camlp4) -I $(shell ocamlfind query type-conv)
+-DOCDIR  = ../doc
+ TARGETS = \
+ 	rpc.cmi rpc.cmo rpc.o rpc.cmx \
+ 	pa_rpc.cma idl.cma \
+--- a/rss/Makefile
++++ b/rss/Makefile
+@@ -1,24 +1,13 @@
+ include ../config.mk
+ 
+-CC = gcc
+-CFLAGS = -Wall -fPIC -O2 -I/opt/xensource/lib/ocaml
+-OCAMLC = ocamlc -g
+-OCAMLOPT = ocamlopt
+-
+-LDFLAGS = -cclib -L./
+-
+-VERSION := $(shell git show-ref --head | grep -E " HEAD$$" | cut -f 1 -d " " || echo 0)
+-OCAMLOPTFLAGS = -g -dtypes
+-
+-OCAMLABI := $(shell ocamlc -version)
+-OCAMLLIBDIR := $(shell ocamlc -where)
+-OCAMLDESTDIR ?= $(OCAMLLIBDIR)
++
++
++
+ 
+ OBJS = rss
+ INTF = $(foreach obj, $(OBJS),$(obj).cmi)
+ LIBS = rss.cma rss.cmxa
+ 
+-DOCDIR = ../doc
+ 
+ all: $(INTF) $(LIBS) $(PROGRAMS)
+ 
+--- a/sexpr/Makefile
++++ b/sexpr/Makefile
+@@ -1,22 +1,7 @@
+ include ../config.mk
+ 
+ IPROG=install -m 755
+-CC = gcc
+-CFLAGS = -Wall -fPIC -O2 -I/opt/xensource/lib/ocaml
+-OCAMLC = ocamlc -g
+-OCAMLOPT = ocamlopt
+ OCAMLLEX = ocamllex
+-OCAMLYACC = ocamlyacc
+-
+-LDFLAGS = -cclib -L./
+-
+-LIBEXEC  = "/opt/xensource/libexec"
+-VERSION := $(shell git show-ref --head | grep -E " HEAD$$" | cut -f 1 -d " " || echo 0)
+-OCAMLOPTFLAGS = -g -dtypes
+-
+-OCAMLABI := $(shell ocamlc -version)
+-OCAMLLIBDIR := $(shell ocamlc -where)
+-OCAMLDESTDIR ?= $(OCAMLLIBDIR)
+ 
+ OBJS = sExpr sExprLexer sExprParser sExpr_TS
+ INTF = $(foreach obj, $(OBJS),$(obj).cmi)
+@@ -24,8 +9,6 @@
+ 
+ PROGRAMS = sexprpp
+ 
+-DOCDIR = ../doc
+-
+ all: $(INTF) $(LIBS)
+ 
+ bins: $(PROGRAMS)
+@@ -33,7 +16,7 @@
+ libs: $(LIBS)
+ 
+ sexprpp: sexprpp.ml all
+-	ocamlfind $(OCAMLOPT) -I ../stdext stdext.cmxa sexpr.cmxa -linkpkg -o $@ $<
++	$(OCAMLOPT) -I ../stdext stdext.cmxa sexpr.cmxa -linkpkg -o $@ $<
+ 
+ sexpr.cmxa: $(foreach obj,$(OBJS),$(obj).cmx)
+ 	$(OCAMLOPT) $(OCAMLOPTFLAGS) -a -o $@ $(foreach obj,$(OBJS),$(obj).cmx)
+--- a/stdext/Makefile
++++ b/stdext/Makefile
+@@ -1,23 +1,7 @@
+ include ../config.mk
+ 
+ IPROG=install -m 755
+-CC = gcc
+ OCAMLLOC := $(shell ocamlc -where)
+-CFLAGS = -Wall -fPIC -O2 -I/opt/xensource/lib/ocaml -I$(OCAMLLOC)
+-OCAMLC = ocamlc -g
+-OCAMLOPT = ocamlopt
+-
+-LDFLAGS = -cclib -L./
+-
+-LIBEXEC = "/opt/xensource/libexec/"
+-VERSION := $(shell git show-ref --head | grep -E " HEAD$$" | cut -f 1 -d " " || echo 0)
+-OCAMLOPTFLAGS = -g -dtypes
+-
+-OCAMLABI := $(OCAMLLOC)
+-OCAMLLIBDIR := $(OCAMLLOC)
+-OCAMLDESTDIR ?= $(OCAMLLIBDIR)
+-
+-FEPP = camlp4o -I ../rpc-light -I $(shell ocamlfind query type-conv) pa_type_conv.cmo pa_rpc.cma
+ 
+ OCAML_TEST_INC = -I $(shell ocamlfind query oUnit)
+ OCAML_TEST_LIB = $(shell ocamlfind query oUnit)/oUnit.cmxa
+@@ -66,8 +50,6 @@
+ 
+ PROGRAMS = base64pp fe_cli fe_test extentlistset_test
+ 
+-DOCDIR = ../doc
+-
+ all: $(INTF) $(LIBS)
+ 
+ bins: $(PROGRAMS)
+@@ -75,16 +57,16 @@
+ libs: $(LIBS)
+ 
+ base64pp: base64_main.ml all libstdext_stubs.a
+-	ocamlfind $(OCAMLOPT) $(OCAMLOPTFLAGS) stdext.cmxa -linkpkg -o $@ $< -ccopt -L.
++	$(OCAMLOPT) $(OCAMLOPTFLAGS) stdext.cmxa -linkpkg -o $@ $< -ccopt -L.
+ 
+ fe_cli: fe_cli.ml all libstdext_stubs.a
+-	ocamlfind $(OCAMLOPT) $(OCAMLOPTFLAGS) unix.cmxa ../uuid/uuid.cmxa ../rpc-light/rpc.cmx ../rpc-light/jsonrpc.cmx stdext.cmxa -linkpkg -o $@ $< -ccopt -L.
++	$(OCAMLOPT) $(OCAMLOPTFLAGS) unix.cmxa ../uuid/uuid.cmxa ../rpc-light/rpc.cmx ../rpc-light/jsonrpc.cmx stdext.cmxa -linkpkg -o $@ $< -ccopt -L.
+ 
+ fe_test: fe_test.ml all libstdext_stubs.a
+-	ocamlfind $(OCAMLOPT) $(OCAMLOPTFLAGS) unix.cmxa ../uuid/uuid.cmxa ../rpc-light/rpc.cmx ../rpc-light/jsonrpc.cmx stdext.cmxa -linkpkg -I ../uuid -o $@ $< -ccopt -L.
++	$(OCAMLOPT) $(OCAMLOPTFLAGS) unix.cmxa ../uuid/uuid.cmxa ../rpc-light/rpc.cmx ../rpc-light/jsonrpc.cmx stdext.cmxa -linkpkg -I ../uuid -o $@ $< -ccopt -L.
+ 
+ extentlistset_test: extentlistset_test.ml all libstdext_stubs.a
+-	ocamlfind $(OCAMLOPT) $(OCAMLOPTFLAGS) unix.cmxa stdext.cmxa -linkpkg -o $@ $< -ccopt -L.
++	$(OCAMLOPT) $(OCAMLOPTFLAGS) unix.cmxa stdext.cmxa -linkpkg -o $@ $< -ccopt -L.
+ 
+ stdext.cmxa: libstdext_stubs.a $(foreach obj,$(STDEXT_OBJS),$(obj).cmx)
+ 	$(OCAMLOPT) $(OCAMLOPTFLAGS) -a -o $@ -cclib -lstdext_stubs $(foreach obj,$(STDEXT_OBJS),$(obj).cmx)
+@@ -111,7 +93,7 @@
+ 	$(OCAMLC) -I ../rpc-light -c -o $@ $<
+ 
+ fe.cmo: fe.ml 
+-	$(OCAMLC) -pp '$(FEPP)' -I ../jsonrpc -I ../rpc-light -c -o $@ $<
++	$(OCAMLC) $(RPCLIGHTFLAGS) -I ../jsonrpc -I ../rpc-light -c -o $@ $<
+ 
+ forkhelpers.cmo: forkhelpers.ml forkhelpers.cmi
+ 	$(OCAMLC) -thread -I ../uuid -c -o $@ $<
+@@ -132,13 +114,13 @@
+ 	$(OCAMLC) -c -I ../uuid -o $@ $<
+ 
+ fe.cmi: fe.cmo
+-	$(OCAMLC) -pp '$(FEPP)' -c -o $@ $<
++	$(OCAMLC) $(RPCLIGHTFLAGS) -c -o $@ $<
+ 
+ %.cmi: %.mli
+ 	$(OCAMLC) -c -o $@ $<
+ 
+ fe.cmx: fe.ml 
+-	$(OCAMLOPT) -pp '$(FEPP)' -I ../rpc-light -c -o $@ $<
++	$(OCAMLOPT) $(RPCLIGHTFLAGS) -I ../rpc-light -c -o $@ $<
+ 
+ threadext.cmx: threadext.ml threadext.cmi
+ 	$(OCAMLOPT) $(OCAMLOPTFLAGS) -thread -c -o $@ $<
+--- a/stunnel/Makefile
++++ b/stunnel/Makefile
+@@ -1,24 +1,13 @@
+ include ../config.mk
+ 
+-CC = gcc
+-CFLAGS = -Wall -fPIC -O2 -I/opt/xensource/lib/ocaml
+-OCAMLC = ocamlc -g
+-OCAMLOPT = ocamlopt
+-
+-LDFLAGS = -cclib -L./
+-
+-VERSION := $(shell git show-ref --head | grep -E " HEAD$$" | cut -f 1 -d " " || echo 0)
+-OCAMLOPTFLAGS = -g -dtypes
+-
+-OCAMLABI := $(shell ocamlc -version)
+-OCAMLLIBDIR := $(shell ocamlc -where)
+-OCAMLDESTDIR ?= $(OCAMLLIBDIR)
++
++
++
+ 
+ OBJS = stunnel stunnel_cache
+ INTF = $(foreach obj, $(OBJS),$(obj).cmi)
+ LIBS = stunnel.cma stunnel.cmxa
+ 
+-DOCDIR = ../doc
+ 
+ all: $(INTF) $(LIBS) $(PROGRAMS)
+ 
+--- a/tapctl/Makefile
++++ b/tapctl/Makefile
+@@ -1,29 +1,12 @@
+ include ../config.mk
+ 
+-OCAMLABI := $(shell ocamlc -version)
+-OCAMLLIBDIR := $(shell ocamlc -where)
+-OCAMLDESTDIR ?= $(OCAMLLIBDIR)
+-
+-CC = gcc
+-CFLAGS = -Wall -fPIC -O2 -I$(OCAMLLIBDIR)
+-OCAMLC = ocamlc -g
+-OCAMLOPT = ocamlopt
+-
+-FEPP = camlp4o -I ../rpc-light -I $(shell ocamlfind query type-conv) pa_type_conv.cmo pa_rpc.cma
+-
+-LDFLAGS = -cclib -L./
+-
+-VERSION := $(shell git show-ref --head | grep -E " HEAD$$" | cut -f 1 -d " " || echo 0)
+-OCAMLOPTFLAGS = -g -dtypes
++#FEPP = camlp4o -I ../rpc-light -I $(shell ocamlfind query type-conv) pa_type_conv.cmo pa_rpc.cma
+ 
+ OBJS = tapctl
+ INTF = $(foreach obj, $(OBJS),$(obj).cmi)
+ LIBS = tapctl.cma tapctl.cmxa
+ 
+-DOCDIR = ../doc
+-
+-OCAMLFLAGS = -pp '${FEPP}' -I ../rpc-light -I ../stdext
+-
++OCAMLFLAGS = $(RPCLIGHTFLAGS) -I ../rpc-light -I ../stdext
+ 
+ all: $(INTF) $(LIBS) $(PROGRAMS)
+ 
+--- a/tests/Makefile
++++ b/tests/Makefile
+@@ -1,7 +1,5 @@
+ include ../config.mk
+ 
+-OCAMLC = ocamlfind ocamlc -g -package "unix,stdext,xc,xb,xs,mmap"
+-OCAMLOPT = ocamlfind ocamlopt -package "unix,stdext,xc,xb,xs,mmap"
+ 
+ 
+ all: copy_file close_all_fds_except unlink watch_bug dotdot
+--- a/udev/Makefile
++++ b/udev/Makefile
+@@ -1,24 +1,13 @@
+ include ../config.mk
+ 
+-CC = gcc
+-CFLAGS = -Wall -fPIC -O2 -I$(shell ocamlc -where)
+-OCAMLC = ocamlc -g
+-OCAMLOPT = ocamlopt
+-
+-LDFLAGS = -cclib -L./
+-
+-VERSION := $(shell git show-ref --head | grep -E " HEAD$$" | cut -f 1 -d " " || echo 0)
+-OCAMLOPTFLAGS = -g -dtypes
+-
+-OCAMLABI := $(shell ocamlc -version)
+-OCAMLLIBDIR := $(shell ocamlc -where)
+-OCAMLDESTDIR ?= $(OCAMLLIBDIR)
++
++
++
+ 
+ OBJS = udev
+ INTF = $(foreach obj, $(OBJS),$(obj).cmi)
+ LIBS = udev.cma udev.cmxa
+ 
+-DOCDIR = ../doc
+ 
+ all: $(INTF) $(LIBS) $(PROGRAMS)
+ 
+--- a/uuid/Makefile
++++ b/uuid/Makefile
+@@ -1,24 +1,13 @@
+ include ../config.mk
+ 
+-LDFLAGS = -cclib -L./
+ 
+-VERSION := $(shell git show-ref --head | grep -E " HEAD$$" | cut -f 1 -d " " || echo 0)
+-OCAMLOPTFLAGS = -g -dtypes
+ 
+-OCAMLABI := $(shell ocamlc -version)
+-OCAMLLIBDIR := $(shell ocamlc -where)
+-OCAMLDESTDIR ?= $(OCAMLLIBDIR)
+ 
+ OBJS = uuid
+-CC = gcc
+-CFLAGS = -Wall -fPIC -O2 -I$(OCAMLLIBDIR)
+-OCAMLC = ocamlc -g
+-OCAMLOPT = ocamlopt
+ 
+ INTF = $(foreach obj, $(OBJS),$(obj).cmi)
+ LIBS = uuid.cma uuid.cmxa
+ 
+-DOCDIR = ../doc
+ 
+ all: $(INTF) $(LIBS) $(PROGRAMS)
+ 
+--- a/vhd/Makefile
++++ b/vhd/Makefile
+@@ -1,26 +1,16 @@
+ include ../config.mk
+ 
+-OCAMLABI := $(shell ocamlc -version)
+-OCAMLLIBDIR := $(shell ocamlc -where)
+-OCAMLDESTDIR ?= $(OCAMLLIBDIR)
+-
+-CC = gcc
+-CFLAGS = -Wall -fPIC -O2 -I$(OCAMLLIBDIR) -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_GNU_SOURCE -fno-strict-aliasing -D_FILE_OFFSET_BITS=64
+-OCAMLC = ocamlc -g
+-OCAMLOPT = ocamlopt
++
+ OCAMLFIND = ocamlfind
+ 
+-LDFLAGS = -cclib -L./
+ 
+ DESTDIR ?= /
+-VERSION := 1
+ OCAMLFLAGS = -g -dtypes 
+ 
+ OBJS = vhd
+ INTF = $(foreach obj, $(OBJS),$(obj).cmi)
+ LIBS = vhd.cma vhd.cmxa
+ 
+-DOCDIR = ../doc
+ 
+ all: $(INTF) $(LIBS) $(PROGRAMS)
+ 
+--- a/xen-utils/Makefile
++++ b/xen-utils/Makefile
+@@ -1,25 +1,14 @@
+ include ../config.mk
+ 
+-CC = gcc
+-CFLAGS = -Wall -fPIC -O2 -I/opt/xensource/lib/ocaml -I$(XEN_ROOT)/usr/include
+-OCAMLC = ocamlc -g
+-OCAMLOPT = ocamlopt
+ INCLUDES = -I ../stdext
+ 
+-LDFLAGS = -cclib -L./
+ 
+-VERSION := $(shell git show-ref --head | grep -E " HEAD$$" | cut -f 1 -d " " || echo 0)
+-OCAMLOPTFLAGS = -g -dtypes
+ 
+-OCAMLABI := $(shell ocamlc -version)
+-OCAMLLIBDIR := $(shell ocamlc -where)
+-OCAMLDESTDIR ?= $(OCAMLLIBDIR)
+ 
+ OBJS = xen_cmdline
+ INTF = $(foreach obj, $(OBJS),$(obj).cmi)
+ LIBS = xen-utils.cma xen-utils.cmxa
+ 
+-DOCDIR = ../doc
+ 
+ all: $(INTF) $(LIBS) $(PROGRAMS)
+ 
+--- a/xml-light2/Makefile
++++ b/xml-light2/Makefile
+@@ -1,33 +1,15 @@
+ include ../config.mk
+ 
+ IPROG=install -m 755
+-OCAMLPACKS = xmlm
+-
+-CC = gcc
+-CFLAGS = -Wall -fPIC -O2 -I/opt/xensource/lib/ocaml
+-
+-OCAMLFIND = ocamlfind
+-OCAMLFINDFLAGS = -package $(OCAMLPACKS)
+-
+-OCAMLC = $(OCAMLFIND) ocamlc -g $(OCAMLFINDFLAGS)
+-OCAMLOPT = $(OCAMLFIND) ocamlopt $(OCAMLFINDFLAGS)
+-
+-LDFLAGS = -cclib -L./
+-
+-LIBEXEC  = "/opt/xensource/libexec"
+-VERSION := $(shell git show-ref --head | grep -E " HEAD$$" | cut -f 1 -d " " || echo 0)
+-OCAMLOPTFLAGS = -g -dtypes
+-
+-OCAMLABI := $(shell ocamlc -version)
+-OCAMLLIBDIR := $(shell ocamlc -where)
+-OCAMLDESTDIR ?= $(OCAMLLIBDIR)
++PACKAGES = xmlm
+ 
+ OBJS = xml
+ INTF = xml.cmi
+ LIBS = xml-light2.cma xml-light2.cmxa
+ PROGRAMS = xmlpp
+ 
+-DOCDIR = ../doc
++OCAMLCFLAGS += -package $(PACKAGES)
++OCAMLOPTFLAGS += -package $(PACKAGES)
+ 
+ all: $(INTF) $(LIBS)
+ 
+@@ -42,13 +24,13 @@
+ 	$(OCAMLOPT) $(OCAMLOPTFLAGS) -a -o $@ $(foreach obj,$(OBJS),$(obj).cmx)
+ 
+ xml-light2.cma: $(foreach obj,$(OBJS),$(obj).cmo)
+-	$(OCAMLC) -a -o $@ $(foreach obj,$(OBJS),$(obj).cmo)
++	$(OCAMLC) $(OCAMLCFLAGS) -a -o $@ $(foreach obj,$(OBJS),$(obj).cmo)
+ 
+ %.cmo: %.ml
+-	$(OCAMLC) -c -I ../stdext -o $@ $<
++	$(OCAMLC) $(OCAMLCFLAGS) -c -I ../stdext -o $@ $<
+ 
+ %.cmi: %.mli
+-	$(OCAMLC) -c -I ../stdext -o $@ $<
++	$(OCAMLC) $(OCAMLCFLAGS) -c -I ../stdext -o $@ $<
+ 
+ %.cmx: %.ml
+ 	$(OCAMLOPT) $(OCAMLOPTFLAGS) -c -I ../stdext -o $@ $<
+--- a/xsrpc/Makefile
++++ b/xsrpc/Makefile
+@@ -1,24 +1,13 @@
+ include ../config.mk
+ 
+-CC = gcc
+-CFLAGS = -Wall -fPIC -O2 -I/opt/xensource/lib/ocaml
+-OCAMLC = ocamlc -g $(OCAML_XB_INC) $(OCAML_XS_INC)
+-OCAMLOPT = ocamlopt
+-
+-LDFLAGS = -cclib -L./
+-
+-VERSION := $(shell git show-ref --head | grep -E " HEAD$$" | cut -f 1 -d " " || echo 0)
+-OCAMLOPTFLAGS = -g -dtypes $(OCAML_XB_INC) $(OCAML_XS_INC)
+-
+-OCAMLABI := $(shell ocamlc -version)
+-OCAMLLIBDIR := $(shell ocamlc -where)
+-OCAMLDESTDIR ?= $(OCAMLLIBDIR)
++
++
++
+ 
+ OBJS = xsrpc
+ INTF = xsrpc.cmi
+ LIBS = xsrpc.cma xsrpc.cmxa
+ 
+-DOCDIR = ../doc
+ 
+ all: $(INTF) $(LIBS) $(PROGRAMS)
+ 

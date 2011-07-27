@@ -1,0 +1,19 @@
+commit 3ac9a997b39571a678352efdef5c0c5b25fba78a
+Author: Jon Ludlam <jon@dhcp-3-31.uk.xensource.com>
+Date:   Fri Jul 1 11:58:53 2011 +0100
+
+    Remove call to get boot cpuid - it's not in OSS Xen
+
+diff --git a/cpuid/cpuid.ml b/cpuid/cpuid.ml
+index ee692d9..c695927 100644
+--- a/cpuid/cpuid.ml
++++ b/cpuid/cpuid.ml
+@@ -138,7 +138,7 @@ let is_maskable manufacturer family model stepping =
+ 
+ let get_features_from_xen () =
+ 	let features = 
+-	  try Xc.with_intf (fun xc -> Xc.get_boot_cpufeatures xc) 
++	  try failwith "Xc.with_intf (fun xc -> Xc.get_boot_cpufeatures xc)"
+ 	  with _ -> 0l, 0l, 0l, 0l, 0l, 0l, 0l, 0l 
+ 	in
+ 	match features with

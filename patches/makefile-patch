@@ -27,16 +27,7 @@
  ifeq ($(HAVE_XEN),1)
  	$(MAKE) -C netdev
  	$(MAKE) -C xsrpc
-@@ -49,7 +50,7 @@
- 	$(MAKE) -C tapctl
- endif
- 
--install: $(STUBLIBDIR)
-+install: $(STUBLIBDIR) installxen bininstall
- 	$(MAKE) -C stdext install
- 	$(MAKE) -C log install
- 	$(MAKE) -C stunnel install
-@@ -166,7 +167,7 @@
+@@ -167,7 +168,7 @@
  	$(MAKE) -C xen-utils doc
  
  .PHONY: clean
@@ -45,7 +36,7 @@
  	$(MAKE) -C camldm clean
  	$(MAKE) -C stdext clean
  	$(MAKE) -C log clean
-@@ -192,6 +193,10 @@
+@@ -193,6 +194,10 @@
  	$(MAKE) -C vhd clean
  	$(MAKE) -C tapctl clean
  
@@ -67,17 +58,6 @@
  
  pciutil.cmxa: $(foreach obj,$(OBJS),$(obj).cmx)
  	$(OCAMLOPT) $(OCAMLOPTFLAGS) -a -o $@ $(foreach obj,$(OBJS),$(obj).cmx)
---- a/stdext/Makefile
-+++ b/stdext/Makefile
-@@ -66,7 +66,7 @@
- 	$(OCAMLOPT) $(OCAMLOPTFLAGS) unix.cmxa ../rpc-light/rpc.cmx ../rpc-light/jsonrpc.cmx stdext.cmxa -linkpkg -o $@ $< -ccopt -L.
- 
- fe_test: fe_test.ml all libstdext_stubs.a
--	$(OCAMLOPT) $(OCAMLOPTFLAGS) unix.cmxa ../rpc-light/rpc.cmx ../rpc-light/jsonrpc.cmx stdext.cmxa -linkpkg -I -o $@ $< -ccopt -L.
-+	$(OCAMLOPT) $(OCAMLOPTFLAGS) unix.cmxa ../rpc-light/rpc.cmx ../rpc-light/jsonrpc.cmx stdext.cmxa -linkpkg -o $@ $< -ccopt -L.
- 
- extentlistset_test: extentlistset_test.ml all libstdext_stubs.a
- 	$(OCAMLOPT) $(OCAMLOPTFLAGS) unix.cmxa stdext.cmxa -linkpkg -o $@ $< -ccopt -L.
 --- a/close-and-exec/Makefile
 +++ b/close-and-exec/Makefile
 @@ -16,7 +16,7 @@

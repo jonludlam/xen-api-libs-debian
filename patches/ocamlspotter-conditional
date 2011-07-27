@@ -1,0 +1,22 @@
+commit d4cc761a9d7e1e6063d28ad2e3308fec1d7049fb
+Author: Mike McClurg <mike.mcclurg@citrix.com>
+Date:   Fri Jul 1 15:07:31 2011 +0100
+
+    Better way to ignore spot/spit files
+    
+    Signed-off-by: Mike McClurg <mike.mcclurg@citrix.com>
+
+diff --git a/config.mk.in b/config.mk.in
+index 6596572..437f35e 100644
+--- a/config.mk.in
++++ b/config.mk.in
+@@ -34,7 +34,4 @@ DOCDIR = ../doc
+ 
+ LIBEXEC = "/opt/xensource/libexec"
+ 
+-HAVESPOT = $(shell ocaml -version | grep spotter | wc -l)
+-ifeq ($(HAVESPOT), 1)
+-     SPOT = *.sp?t
+-endif
+\ No newline at end of file
++SPOT=$(wildcard *.sp?t)

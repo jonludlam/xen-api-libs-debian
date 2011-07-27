@@ -53,26 +53,6 @@
  install: $(LIBS) META
  	mkdir -p $(path)
  	ocamlfind install -destdir $(path) -ldconf ignore log META $(INTF) $(LIBS) *.a *.so *.cmx $(SPOT)
---- a/mlvm/Makefile
-+++ b/mlvm/Makefile
-@@ -3,7 +3,7 @@
- LIBOBJS = constants lvm_uuid crc utils tag absty lvmconfigparser lvmconfiglex lvmmarshal allocator debug redo lv pv vg
- INTF = $(foreach obj, $(LIBOBJS),$(obj).cmi)
- CMDOBJS = messages.cmx mlvm.cmx
--COMPFLAG = -dtypes -g -I ../stdext -I ../camldm -I ../uuid -for-pack Lvm $(RPCLIGHTFLAGS)
-+COMPFLAG = -package uuid -dtypes -g -I ../stdext -I ../camldm -for-pack Lvm $(RPCLIGHTFLAGS)
- 
- LIBS = lvm.cma lvm.cmxa
- 
-@@ -29,7 +29,7 @@
- 
- .PHONY: install
- install: $(LIBS) META
--	ocamlfind install -destdir $(DESTDIR)$(shell ocamlfind printconf destdir) -ldconf ignore lvm META lvm.cmi lvm.cmxa lvm.cma lvm.a $(SPOT)
-+	ocamlfind install -destdir $(DESTDIR)$(shell ocamlc -where) -ldconf ignore lvm META lvm.cmi lvm.cmxa lvm.cma lvm.a $(SPOT)
- 
- .PHONY: uninstall
- uninstall:
 --- a/netdev/Makefile
 +++ b/netdev/Makefile
 @@ -41,7 +41,7 @@
@@ -146,7 +126,7 @@
  	ocamlfind install -destdir $(path) -ldconf ignore sexpr META $(INTF) $(LIBS) *.a *.cmx $(SPOT)
 --- a/stdext/Makefile
 +++ b/stdext/Makefile
-@@ -147,7 +147,7 @@
+@@ -150,7 +150,7 @@
  	sed 's/@VERSION@/$(VERSION)/g' < $< > $@
  
  .PHONY: install
@@ -157,7 +137,7 @@
  	ocamlfind install -destdir $(path) -ldconf ignore stdext META $(INTF) $(LIBS) *.a *.so *.cmx $(SPOT)
 --- a/stunnel/Makefile
 +++ b/stunnel/Makefile
-@@ -35,7 +35,7 @@
+@@ -42,7 +42,7 @@
  	sed 's/@VERSION@/$(VERSION)/g' < $< > $@
  
  .PHONY: install

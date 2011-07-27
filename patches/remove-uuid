@@ -1,0 +1,459 @@
+commit 1cf02690f7d60f685a3ef4d70b8746ed937b50b0
+Author: Jon Ludlam <jon@dhcp-3-31.uk.xensource.com>
+Date:   Fri Jul 1 13:35:29 2011 +0100
+
+    Remove uuid from xen-api-libs (it's in xen-4.1)
+
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -16,7 +16,6 @@
+ ifeq ($(HAVE_TYPECONV),type-conv)
+ 	$(MAKE) -C rpc-light
+ endif
+-	$(MAKE) -C uuid
+ 	$(MAKE) -C stdext
+ 	$(MAKE) -C log
+ 	$(MAKE) -C stunnel
+@@ -51,7 +50,6 @@
+ endif
+ 
+ install: $(STUBLIBDIR)
+-	$(MAKE) -C uuid install
+ 	$(MAKE) -C stdext install
+ 	$(MAKE) -C log install
+ 	$(MAKE) -C stunnel install
+@@ -87,7 +85,6 @@
+ endif
+ 
+ uninstall:
+-	$(MAKE) -C uuid uninstall
+ 	$(MAKE) -C stdext uninstall
+ 	$(MAKE) -C log uninstall
+ 	$(MAKE) -C stunnel uninstall
+@@ -147,7 +144,6 @@
+ 
+ .PHONY: doc
+ doc:
+-	$(MAKE) -C uuid doc
+ 	$(MAKE) -C stdext doc
+ 	$(MAKE) -C sexpr doc
+ 	$(MAKE) -C udev doc
+@@ -171,7 +167,6 @@
+ 
+ .PHONY: clean
+ clean:
+-	$(MAKE) -C uuid clean
+ 	$(MAKE) -C camldm clean
+ 	$(MAKE) -C stdext clean
+ 	$(MAKE) -C log clean
+--- a/close-and-exec/Makefile
++++ b/close-and-exec/Makefile
+@@ -16,7 +16,7 @@
+ libs: $(LIBS)
+ 
+ closeandexec: closeandexec.cmxa closeandexec_main.cmx all
+-	$(OCAMLOPT) $(OCAMLOPTFLAGS) -thread -I ../stdext -I ../uuid uuid.cmxa unix.cmxa threads.cmxa stdext.cmxa closeandexec.cmxa closeandexec_main.cmx -o $@
++	$(OCAMLOPT) $(OCAMLOPTFLAGS) -thread -I ../stdext unix.cmxa threads.cmxa stdext.cmxa closeandexec.cmxa closeandexec_main.cmx -o $@
+ 
+ closeandexec.cmxa: $(foreach obj,$(OBJS),$(obj).cmx)
+ 	$(OCAMLOPT) $(OCAMLOPTFLAGS) -a -o $@ $(foreach obj,$(OBJS),$(obj).cmx)
+--- a/forking_executioner/Makefile
++++ b/forking_executioner/Makefile
+@@ -9,6 +9,8 @@
+ LIBS = 
+ 
+ PROGRAMS = fe
++OCAMLOPTFLAGS += -package uuid
++OCAMLCFLAGS += -package uuid
+ 
+ all: $(INTF) $(LIBS) $(PROGRAMS)
+ 
+@@ -17,19 +19,19 @@
+ libs: $(LIBS)
+ 
+ test_forker: test_forker.cmx
+-	$(OCAMLOPT) $(OCAMLOPTFLAGS) -I ../rpc-light -I ../uuid -I ../stdext uuid.cmxa rpc.cmx jsonrpc.cmx -I ../log unix.cmxa stdext.cmxa  test_forker.cmx -o $@
++	$(OCAMLOPT) $(OCAMLOPTFLAGS) -I ../rpc-light -I ../stdext uuid.cmxa rpc.cmx jsonrpc.cmx -I ../log unix.cmxa stdext.cmxa  test_forker.cmx -o $@
+ 
+ fe: fe_debug.cmx child.cmx fe_main.cmx
+-	$(OCAMLOPT) $(OCAMLOPTFLAGS) -I ../rpc-light -I ../stdext -I ../uuid  -I ../log log.cmxa uuid.cmxa unix.cmxa rpc.cmx jsonrpc.cmx stdext.cmxa fe_debug.cmx child.cmx fe_main.cmx -o $@
++	$(OCAMLOPT) $(OCAMLOPTFLAGS) -I ../rpc-light -I ../stdext -I ../log log.cmxa uuid.cmxa unix.cmxa rpc.cmx jsonrpc.cmx stdext.cmxa fe_debug.cmx child.cmx fe_main.cmx -o $@
+ 
+ %.cmo: %.ml
+-	$(OCAMLC) -c -I ../log -I ../uuid -I ../stdext -thread -o $@  $<
++	$(OCAMLC) $(OCAMLCFLAGS) -c -I ../log -I ../stdext -thread -o $@  $<
+ 
+ %.cmi: %.mli
+-	$(OCAMLC) -c -I ../log -I ../uuid -I ../stdext -o $@  $<
++	$(OCAMLC) $(OCAMLCFLAGS) -c -I ../log -I ../stdext -o $@  $<
+ 
+ %.cmx: %.ml
+-	$(OCAMLOPT) $(OCAMLOPTFLAGS) -I ../log -I ../uuid -c -I ../stdext -o $@ $<
++	$(OCAMLOPT) $(OCAMLOPTFLAGS) -I ../log -c -I ../stdext -o $@ $<
+ 
+ META: META.in
+ 	sed 's/@VERSION@/$(VERSION)/g' < $< > $@
+--- a/include/config.h.in
++++ b/include/config.h.in
+@@ -58,6 +58,9 @@
+ /* Define to the one symbol short name of this package. */
+ #undef PACKAGE_TARNAME
+ 
++/* Define to the home page for this package. */
++#undef PACKAGE_URL
++
+ /* Define to the version of this package. */
+ #undef PACKAGE_VERSION
+ 
+--- a/mlvm/Makefile
++++ b/mlvm/Makefile
+@@ -3,14 +3,14 @@
+ LIBOBJS = constants lvm_uuid crc utils absty lvmconfigparser lvmconfiglex lvmmarshal allocator debug redo lv pv vg 
+ INTF = $(foreach obj, $(LIBOBJS),$(obj).cmi)
+ CMDOBJS = messages.cmx mlvm.cmx
+-COMPFLAG = -dtypes -g -I ../stdext -I ../camldm -I ../uuid -for-pack Lvm $(RPCLIGHTFLAGS)
++COMPFLAG = -package uuid -dtypes -g -I ../stdext -I ../camldm -for-pack Lvm $(RPCLIGHTFLAGS)
+ 
+ LIBS = lvm.cma lvm.cmxa
+ 
+ default : $(LIBS)
+ 
+ test_allocator: default
+-	$(OCAMLOPT) -package kaputt -linkpkg -dtypes -g  -I ../stdext -I ../camldm -I ../uuid -I +kaputt unix.cmxa ../rpc-light/rpc.cmx ../rpc-light/jsonrpc.cmx ../camldm/camldm.cmxa ../uuid/uuid.cmxa ../stdext/stdext.cmxa ./lvm.cmxa test_allocator.ml -o $@
++	$(OCAMLOPT) -package kaputt -linkpkg -dtypes -g  -I ../stdext -I ../camldm -I +kaputt unix.cmxa ../rpc-light/rpc.cmx ../rpc-light/jsonrpc.cmx ../camldm/camldm.cmxa ../stdext/stdext.cmxa ./lvm.cmxa test_allocator.ml -o $@
+ 
+ lvm.cmx: $(foreach obj,$(LIBOBJS),$(obj).cmx)
+ 	$(OCAMLOPT) -pack -g -o $@ $(foreach obj,$(LIBOBJS),$(obj).cmx)
+@@ -62,19 +62,15 @@
+ .ml.cmx:
+ 	$(OCAMLOPT) $(COMPFLAG) -c $<
+ 
+-.c.o:
+-	$(OCAMLC) $(COMPFLAG) -c $<
+-
+-lvmcmd.cmo: messages.cmo 
+-lvmcmd.cmx: messages.cmx 
+-lv.cmo: absty.cmo 
+-lv.cmx: absty.cmx 
+-mlvm.cmo: vg.cmo pv.cmo messages.cmo lv.cmo 
+-mlvm.cmx: vg.cmx pv.cmx messages.cmx lv.cmx 
+-pv.cmo: utils.cmo lvmmarshal.cmo lvm_uuid.cmo crc.cmo constants.cmo \
+-    allocator.cmo absty.cmo 
+-pv.cmx: utils.cmx lvmmarshal.cmx lvm_uuid.cmx crc.cmx constants.cmx \
+-    allocator.cmx absty.cmx 
+-vg.cmo: debug.cmo pv.cmo lvm_uuid.cmo lv.cmo allocator.cmo absty.cmo 
+-vg.cmx: debug.cmx pv.cmx lvm_uuid.cmx lv.cmx allocator.cmx absty.cmx 
+-
++lvmcmd.cmo: messages.cmo
++lvmcmd.cmx: messages.cmx
++lv.cmo: absty.cmo
++lv.cmx: absty.cmx
++mlvm.cmo: vg.cmo pv.cmo messages.cmo lv.cmo
++mlvm.cmx: vg.cmx pv.cmx messages.cmx lv.cmx
++pv.cmo: utils.cmo lvmmarshal.cmo lvm_uuid.cmo crc.cmo constants.cmo allocator.cmo absty.cmo
++pv.cmx: utils.cmx lvmmarshal.cmx lvm_uuid.cmx crc.cmx constants.cmx allocator.cmx absty.cmx
++vg.cmo: debug.cmo pv.cmo lvm_uuid.cmo lv.cmo allocator.cmo absty.cmo
++vg.cmx: debug.cmx pv.cmx lvm_uuid.cmx lv.cmx allocator.cmx absty.cmx
++redo.cmo: debug.cmo allocator.cmo
++redo.cmx: debug.cmx allocator.cmx
+--- a/pciutil/Makefile
++++ b/pciutil/Makefile
+@@ -16,7 +16,7 @@
+ libs: $(LIBS)
+ 
+ pciutil: pciutil_main.cmx
+-	$(OCAMLOPT) $(OCAMLOPTFLAGS) -I ./ -I ../stdext -I ../uuid unix.cmxa uuid.cmxa stdext.cmxa pciutil.cmx -o $@ $^
++	$(OCAMLOPT) $(OCAMLOPTFLAGS) -I ./ -I ../stdext unix.cmxa stdext.cmxa pciutil.cmx -o $@ $^
+ 
+ pciutil.cmxa: $(foreach obj,$(OBJS),$(obj).cmx)
+ 	$(OCAMLOPT) $(OCAMLOPTFLAGS) -a -o $@ $(foreach obj,$(OBJS),$(obj).cmx)
+--- a/stdext/Makefile
++++ b/stdext/Makefile
+@@ -6,6 +6,9 @@
+ OCAML_TEST_INC = -I $(shell ocamlfind query oUnit)
+ OCAML_TEST_LIB = $(shell ocamlfind query oUnit)/oUnit.cmxa
+ 
++OCAMLCFLAGS += -package uuid
++OCAMLOPTFLAGS += -package uuid
++
+ STDEXT_OBJS = \
+ 	monad \
+ 	fun \
+@@ -60,10 +63,10 @@
+ 	$(OCAMLOPT) $(OCAMLOPTFLAGS) stdext.cmxa -linkpkg -o $@ $< -ccopt -L.
+ 
+ fe_cli: fe_cli.ml all libstdext_stubs.a
+-	$(OCAMLOPT) $(OCAMLOPTFLAGS) unix.cmxa ../uuid/uuid.cmxa ../rpc-light/rpc.cmx ../rpc-light/jsonrpc.cmx stdext.cmxa -linkpkg -o $@ $< -ccopt -L.
++	$(OCAMLOPT) $(OCAMLOPTFLAGS) unix.cmxa ../rpc-light/rpc.cmx ../rpc-light/jsonrpc.cmx stdext.cmxa -linkpkg -o $@ $< -ccopt -L.
+ 
+ fe_test: fe_test.ml all libstdext_stubs.a
+-	$(OCAMLOPT) $(OCAMLOPTFLAGS) unix.cmxa ../uuid/uuid.cmxa ../rpc-light/rpc.cmx ../rpc-light/jsonrpc.cmx stdext.cmxa -linkpkg -I ../uuid -o $@ $< -ccopt -L.
++	$(OCAMLOPT) $(OCAMLOPTFLAGS) unix.cmxa ../rpc-light/rpc.cmx ../rpc-light/jsonrpc.cmx stdext.cmxa -linkpkg -o $@ $< -ccopt -L.
+ 
+ extentlistset_test: extentlistset_test.ml all libstdext_stubs.a
+ 	$(OCAMLOPT) $(OCAMLOPTFLAGS) unix.cmxa stdext.cmxa -linkpkg -o $@ $< -ccopt -L.
+@@ -72,7 +75,7 @@
+ 	$(OCAMLOPT) $(OCAMLOPTFLAGS) -a -o $@ -cclib -lstdext_stubs $(foreach obj,$(STDEXT_OBJS),$(obj).cmx)
+ 
+ stdext.cma: $(foreach obj,$(STDEXT_OBJS),$(obj).cmo)
+-	$(OCAMLC) -a -dllib dllstdext_stubs.so -cclib -lstdext_stubs -o $@ $(foreach obj,$(STDEXT_OBJS),$(obj).cmo)
++	$(OCAMLC) $(OCAMLCFLAGS) -a -dllib dllstdext_stubs.so -cclib -lstdext_stubs -o $@ $(foreach obj,$(STDEXT_OBJS),$(obj).cmo)
+ 
+ stdext_stubs.a: unixext_stubs.o zerocheck_stub.o 
+ 	ocamlmklib -o stdext_stubs $+
+@@ -96,13 +99,13 @@
+ 	$(OCAMLC) $(RPCLIGHTFLAGS) -I ../jsonrpc -I ../rpc-light -c -o $@ $<
+ 
+ forkhelpers.cmo: forkhelpers.ml forkhelpers.cmi
+-	$(OCAMLC) -thread -I ../uuid -c -o $@ $<
++	$(OCAMLC) $(OCAMLCFLAGS) -thread -c -o $@ $<
+ 
+ filenameext.cmo: filenameext.ml filenameext.cmi
+-	$(OCAMLC) -c -I ../uuid -o $@ $<
++	$(OCAMLC) $(OCAMLCFLAGS) -c -o $@ $<
+ 
+ %.cmo: %.ml %.cmi
+-	$(OCAMLC) -c -o $@ $<
++	$(OCAMLC) $(OCAMLCFLAGS) -c -o $@ $<
+ 
+ threadext.cmi: threadext.mli
+ 	$(OCAMLC) -thread -c -o $@ $<
+@@ -111,13 +114,13 @@
+ 	$(OCAMLC) -thread -c -o $@ $<
+ 
+ filenameext.cmi: filenameext.mli
+-	$(OCAMLC) -c -I ../uuid -o $@ $<
++	$(OCAMLC) -c -o $@ $<
+ 
+ fe.cmi: fe.cmo
+ 	$(OCAMLC) $(RPCLIGHTFLAGS) -c -o $@ $<
+ 
+ %.cmi: %.mli
+-	$(OCAMLC) -c -o $@ $<
++	$(OCAMLC) $(OCAMLCFLAGS) -c -o $@ $<
+ 
+ fe.cmx: fe.ml 
+ 	$(OCAMLOPT) $(RPCLIGHTFLAGS) -I ../rpc-light -c -o $@ $<
+@@ -129,13 +132,13 @@
+ 	$(OCAMLOPT) -I ../rpc-light -c -o $@ $<
+ 
+ forkhelpers.cmx: forkhelpers.ml forkhelpers.cmi
+-	$(OCAMLOPT) $(OCAMLOPTFLAGS) -I ../uuid -thread -c -o $@ $<
++	$(OCAMLOPT) $(OCAMLOPTFLAGS) -thread -c -o $@ $<
+ 
+ filenameext.cmx: filenameext.ml filenameext.cmi
+-	$(OCAMLOPT) $(OCAMLOPTFLAGS) -thread -c -I ../uuid -o $@ $<
++	$(OCAMLOPT) $(OCAMLOPTFLAGS) -thread -c -o $@ $<
+ 
+ %.cmx: %.ml %.cmi
+-	$(OCAMLOPT) $(OCAMLOPTFLAGS) -I ../uuid -c -o $@ $<
++	$(OCAMLOPT) $(OCAMLOPTFLAGS) -c -o $@ $<
+ 
+ %.o: %.c
+ 	$(CC) $(CFLAGS) -c -o $@ $<
+--- a/stunnel/Makefile
++++ b/stunnel/Makefile
+@@ -8,6 +8,8 @@
+ INTF = $(foreach obj, $(OBJS),$(obj).cmi)
+ LIBS = stunnel.cma stunnel.cmxa
+ 
++OCAMLOPTFLAGS += -package uuid
++OCAMLCFLAGS += -package uuid
+ 
+ all: $(INTF) $(LIBS) $(PROGRAMS)
+ 
+@@ -22,13 +24,13 @@
+ 	$(OCAMLC) -a -o $@ $(foreach obj,$(OBJS),$(obj).cmo)
+ 
+ %.cmo: %.ml
+-	$(OCAMLC) -c -I ../stdext -I ../uuid -I ../log -o $@ $<
++	$(OCAMLC) $(OCAMLCFLAGS) -c -I ../stdext -I ../log -o $@ $<
+ 
+ %.cmi: %.mli
+-	$(OCAMLC) -c -I ../stdext -I ../uuid -o $@ $<
++	$(OCAMLC) $(OCAMLCFLAGS) -c -I ../stdext -o $@ $<
+ 
+ %.cmx: %.ml
+-	$(OCAMLOPT) $(OCAMLOPTFLAGS) -c -I ../stdext -I ../uuid -I ../log -o $@ $<
++	$(OCAMLOPT) $(OCAMLOPTFLAGS) -c -I ../stdext -I ../log -o $@ $<
+ 
+ %.o: %.c
+ 	$(CC) $(CFLAGS) -c -o $@ $<
+--- a/uuid/META.in
++++ /dev/null
+@@ -1,4 +0,0 @@
+-version = "@VERSION@"
+-description = "Uuid - universal identifer"
+-archive(byte) = "uuid.cma"
+-archive(native) = "uuid.cmxa"
+--- a/uuid/uuid.ml
++++ /dev/null
+@@ -1,99 +0,0 @@
+-(*
+- * Copyright (C) 2006-2009 Citrix Systems Inc.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU Lesser General Public License as published
+- * by the Free Software Foundation; version 2.1 only. with the special
+- * exception on linking described in file LICENSE.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU Lesser General Public License for more details.
+- *)
+-
+-(* Internally, a UUID is simply a string. *)
+-type 'a t = string
+-
+-type cookie = string
+-
+-let of_string s = s
+-let to_string s = s
+-
+-let null = ""
+-
+-(* deprecated: we don't need to duplicate the uuid prefix/suffix *)
+-let uuid_of_string = of_string
+-let string_of_uuid = to_string
+-
+-let string_of_cookie s = s
+-
+-let cookie_of_string s = s
+-
+-let dev_random = "/dev/random"
+-let dev_urandom = "/dev/urandom"
+-
+-let rnd_array n =
+-	let fstbyte i = 0xff land i in
+-	let sndbyte i = fstbyte (i lsr 8) in
+-	let thdbyte i = sndbyte (i lsr 8) in
+-	let rec rnd_list n acc = match n with
+-		| 0 -> acc
+-		| 1 ->
+-			let b = fstbyte (Random.bits ()) in
+-			b :: acc
+-		| 2 ->
+-			let r = Random.bits () in
+-			let b1 = fstbyte r in
+-			let b2 = sndbyte r in
+-			b1 :: b2 :: acc
+-		| n -> 
+-			let r = Random.bits () in
+-			let b1 = fstbyte r in
+-			let b2 = sndbyte r in
+-			let b3 = thdbyte r in
+-			rnd_list (n - 3) (b1 :: b2 :: b3 :: acc)
+-	in
+-	Array.of_list (rnd_list n [])
+-
+-let read_array dev n = 
+-  let ic = open_in_bin dev in
+-  try
+-    let result = Array.init n (fun _ -> input_byte ic) in
+-    close_in ic;
+-    result
+-  with e ->
+-    close_in ic;
+-    raise e
+-
+-let uuid_of_int_array uuid =
+-  Printf.sprintf "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x"
+-    uuid.(0) uuid.(1) uuid.(2) uuid.(3) uuid.(4) uuid.(5)
+-    uuid.(6) uuid.(7) uuid.(8) uuid.(9) uuid.(10) uuid.(11)
+-    uuid.(12) uuid.(13) uuid.(14) uuid.(15)
+-
+-let make_uuid_prng () = uuid_of_int_array (rnd_array 16)
+-let make_uuid_urnd () = uuid_of_int_array (read_array dev_urandom 16)
+-let make_uuid_rnd () = uuid_of_int_array (read_array dev_random 16)
+-let make_uuid = make_uuid_urnd
+-
+-let make_cookie() =
+-  let bytes = Array.to_list (read_array dev_urandom 64) in
+-  String.concat "" (List.map (Printf.sprintf "%1x") bytes)
+-
+-let int_array_of_uuid s =
+-  try
+-    let l = ref [] in
+-    Scanf.sscanf s "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x"
+-      (fun a0 a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 ->
+-      l := [ a0; a1; a2; a3; a4; a5; a6; a7; a8; a9;
+-             a10; a11; a12; a13; a14; a15; ]);
+-    Array.of_list !l
+-  with _ -> invalid_arg "Uuid.int_array_of_uuid"
+-
+-let is_uuid str =
+-	try
+-		Scanf.sscanf str
+-			"%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x"
+-			(fun _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ -> true)
+-	with _ -> false
+--- a/uuid/uuid.mli
++++ /dev/null
+@@ -1,66 +0,0 @@
+-(*
+- * Copyright (C) 2006-2009 Citrix Systems Inc.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU Lesser General Public License as published
+- * by the Free Software Foundation; version 2.1 only. with the special
+- * exception on linking described in file LICENSE.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU Lesser General Public License for more details.
+- *)
+-(** Type-safe UUIDs.
+-    Probably need to refactor this; UUIDs are used in two places:
+-    + to uniquely name things across the cluster
+-    + as secure session IDs
+-
+-    There is the additional constraint that current Xen tools use 
+-    a particular format of UUID (the 16 byte variety generated by fresh ())
+-
+-	Also, cookies aren't UUIDs and should be put somewhere else.
+-*)
+-
+-(** A 128-bit UUID.  Using phantom types ('a) to achieve the requires type-safety. *)
+-type 'a t
+-
+-(** Create a fresh UUID *)
+-val make_uuid : unit -> 'a t
+-val make_uuid_prng : unit -> 'a t
+-val make_uuid_urnd : unit -> 'a t
+-val make_uuid_rnd : unit -> 'a t
+-
+-(** Create a UUID from a string. *)
+-val of_string : string -> 'a t
+-
+-(** Marshal a UUID to a string. *)
+-val to_string : 'a t -> string
+-
+-(** A null UUID, as if such a thing actually existed.  It turns out to be
+- * useful though. *)
+-val null : 'a t
+-
+-(** Deprecated alias for {! Uuid.of_string} *)
+-val uuid_of_string : string -> 'a t
+-
+-(** Deprecated alias for {! Uuid.to_string} *)
+-val string_of_uuid : 'a t -> string
+-
+-(** Convert an array to a UUID. *)
+-val uuid_of_int_array : int array -> 'a t
+-
+-(** Convert a UUID to an array. *)
+-val int_array_of_uuid : 'a t -> int array
+-
+-(** Check whether a string is a UUID. *)
+-val is_uuid : string -> bool
+-
+-(** A 512-bit cookie. *)
+-type cookie
+-
+-val make_cookie : unit -> cookie
+-
+-val cookie_of_string : string -> cookie
+-
+-val string_of_cookie : cookie -> string
