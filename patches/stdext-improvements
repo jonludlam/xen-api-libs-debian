@@ -6,7 +6,7 @@ Date:   Fri Jul 1 14:00:39 2011 +0100
 
 --- a/stdext/forkhelpers.ml
 +++ b/stdext/forkhelpers.ml
-@@ -151,23 +151,34 @@
+@@ -161,23 +161,34 @@
      close_fds
  
  
@@ -61,9 +61,9 @@ Date:   Fri Jul 1 14:00:39 2011 +0100
 +	execute_command_get_output_inner ?env ~stdin ~syslog_stdout cmd args
 --- a/stdext/forkhelpers.mli
 +++ b/stdext/forkhelpers.mli
-@@ -39,6 +39,11 @@
+@@ -44,6 +44,11 @@
      [Spawn_internal_error(stderr, stdout, Unix.process_status)] *)
- val execute_command_get_output : ?env:string array -> ?syslog_stdout:bool -> string -> string list -> string * string
+ val execute_command_get_output : ?env:string array -> ?syslog_stdout:syslog_stdout_t -> string -> string list -> string * string
  
 +(** [execute_command_get_output cmd args stdin] runs [cmd args], passes in the string [stdin] and returns (stdout, stderr)
 +	on success (exit 0). On failure this raises 
