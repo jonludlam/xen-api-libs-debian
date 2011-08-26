@@ -57,7 +57,7 @@ Date:   Fri Jul 1 14:00:39 2011 +0100
 -	raise exn
 +	execute_command_get_output_inner ?env ?stdin:None ~syslog_stdout cmd args
  
-+let execute_command_get_output_send_stdin ?env ?(syslog_stdout=false) cmd args stdin =
++let execute_command_get_output_send_stdin ?env ?(syslog_stdout=NoSyslogging) cmd args stdin =
 +	execute_command_get_output_inner ?env ~stdin ~syslog_stdout cmd args
 --- a/stdext/forkhelpers.mli
 +++ b/stdext/forkhelpers.mli
