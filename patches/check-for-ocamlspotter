@@ -6,11 +6,9 @@ Date:   Tue Jun 28 18:27:59 2011 +0100
     
     Signed-off-by: Mike McClurg <mike.mcclurg@citrix.com>
 
-diff --git a/camldm/Makefile b/camldm/Makefile
-index d6f88fe..e498f05 100644
 --- a/camldm/Makefile
 +++ b/camldm/Makefile
-@@ -44,7 +44,7 @@ META: META.in
+@@ -44,7 +44,7 @@
  install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
  install: $(LIBS) META
  	mkdir -p $(path)
@@ -19,17 +17,15 @@ index d6f88fe..e498f05 100644
  
  .PHONY: uninstall
  uninstall:
-@@ -55,4 +55,4 @@ doc: $(INTF)
+@@ -55,4 +55,4 @@
  	python ../doc/doc.py $(DOCDIR) "camldm" "package" "$(OBJS)" "." "" ""
  
  clean:
 -	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot *.sp?t $(LIBS) $(PROGRAMS)
 +	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot $(SPOT) $(LIBS) $(PROGRAMS)
-diff --git a/cdrom/Makefile b/cdrom/Makefile
-index d7f7bff..ae5f9cf 100644
 --- a/cdrom/Makefile
 +++ b/cdrom/Makefile
-@@ -42,7 +42,7 @@ META: META.in
+@@ -42,7 +42,7 @@
  install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
  install: $(LIBS) META
  	mkdir -p $(path)
@@ -38,17 +34,15 @@ index d7f7bff..ae5f9cf 100644
  
  .PHONY: uninstall
  uninstall:
-@@ -53,4 +53,4 @@ doc: $(INTF)
+@@ -53,4 +53,4 @@
  	python ../doc/doc.py $(DOCDIR) "cdrom" "package" "$(OBJS)" "." "" ""
  
  clean:
 -	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot *.sp?t $(LIBS) $(PROGRAMS)
 +	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot $(SPOT) $(LIBS) $(PROGRAMS)
-diff --git a/close-and-exec/Makefile b/close-and-exec/Makefile
-index 17a21f8..804bbf1 100644
 --- a/close-and-exec/Makefile
 +++ b/close-and-exec/Makefile
-@@ -43,7 +43,7 @@ META: META.in
+@@ -43,7 +43,7 @@
  install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
  install: $(LIBS) META
  	mkdir -p $(path)
@@ -57,17 +51,15 @@ index 17a21f8..804bbf1 100644
  
  .PHONY: bininstall
  bininstall: path = $(DESTDIR)$(LIBEXEC)
-@@ -64,4 +64,4 @@ doc: $(INTF)
+@@ -64,4 +64,4 @@
  	python ../doc/doc.py $(DOCDIR) "close-and-exec" "library" "$(OBJS)" "." "stdext" ""
  
  clean:
 -	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot *.sp?t $(LIBS) $(PROGRAMS)
 +	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot $(SPOT) $(LIBS) $(PROGRAMS)
-diff --git a/config.mk.in b/config.mk.in
-index 0bab7f5..6596572 100644
 --- a/config.mk.in
 +++ b/config.mk.in
-@@ -32,4 +32,9 @@ RPCLIGHTFLAGS = -package type-conv -ppopt -I -ppopt ../rpc-light -ppopt pa_rpc.c
+@@ -32,4 +32,9 @@
  
  DOCDIR = ../doc
  
@@ -80,11 +72,9 @@ index 0bab7f5..6596572 100644
 +     SPOT = *.sp?t
 +endif
 \ No newline at end of file
-diff --git a/cpuid/Makefile b/cpuid/Makefile
-index 5cfb91f..c497c43 100644
 --- a/cpuid/Makefile
 +++ b/cpuid/Makefile
-@@ -44,7 +44,7 @@ META: META.in
+@@ -44,7 +44,7 @@
  install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
  install: $(LIBS) META
  	mkdir -p $(path)
@@ -93,28 +83,24 @@ index 5cfb91f..c497c43 100644
  
  .PHONY: uninstall
  uninstall:
-@@ -55,5 +55,5 @@ doc: $(INTF)
+@@ -55,5 +55,5 @@
  	python ../doc/doc.py $(DOCDIR) "cpuid" "package" "$(OBJS)" "." "stdext xc xen-utils" ""
  
  clean:
 -	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot *.sp?t $(LIBS) $(PROGRAMS) *~ *.rej
 +	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot $(SPOT) $(LIBS) $(PROGRAMS) *~ *.rej
  
-diff --git a/forking_executioner/Makefile b/forking_executioner/Makefile
-index 5be228b..7862b0a 100644
 --- a/forking_executioner/Makefile
 +++ b/forking_executioner/Makefile
-@@ -57,4 +57,4 @@ binuninstall:
+@@ -57,4 +57,4 @@
  doc: 
  
  clean:
 -	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot *.sp?t $(LIBS) $(PROGRAMS)
 +	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot $(SPOT) $(LIBS) $(PROGRAMS)
-diff --git a/http-svr/Makefile b/http-svr/Makefile
-index 629669a..2fee2ae 100644
 --- a/http-svr/Makefile
 +++ b/http-svr/Makefile
-@@ -35,7 +35,7 @@ META: META.in
+@@ -48,7 +48,7 @@
  install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
  install: $(LIBS) META
  	mkdir -p $(path)
@@ -123,17 +109,15 @@ index 629669a..2fee2ae 100644
  
  .PHONY: uninstall
  uninstall:
-@@ -46,4 +46,4 @@ doc: $(INTF)
+@@ -59,4 +59,4 @@
  	python ../doc/doc.py $(DOCDIR) "http-svr" "package" "$(OBJS)" "." "log,stdext" ""
  
  clean:
 -	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot *.sp?t $(LIBS) $(PROGRAMS)
 +	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot $(SPOT) $(LIBS) $(PROGRAMS)
-diff --git a/log/Makefile b/log/Makefile
-index 0a920f0..59a5641 100644
 --- a/log/Makefile
 +++ b/log/Makefile
-@@ -50,7 +50,7 @@ debug.cmi: logs.cmi
+@@ -50,7 +50,7 @@
  install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
  install: $(LIBS) META
  	mkdir -p $(path)
@@ -142,17 +126,15 @@ index 0a920f0..59a5641 100644
  
  .PHONY: uninstall
  uninstall:
-@@ -61,4 +61,4 @@ doc: $(INTF)
+@@ -61,4 +61,4 @@
  	python ../doc/doc.py $(DOCDIR) "log" "package" "$(OBJS)" "." "stdext" ""
  
  clean:
 -	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot *.sp?t $(LIBS) $(PROGRAMS)
 +	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot $(SPOT) $(LIBS) $(PROGRAMS)
-diff --git a/mlvm/Makefile b/mlvm/Makefile
-index 667ea94..ebb19d6 100644
 --- a/mlvm/Makefile
 +++ b/mlvm/Makefile
-@@ -29,14 +29,14 @@ META: META.in
+@@ -29,14 +29,14 @@
  
  .PHONY: install
  install: $(LIBS) META
@@ -169,11 +151,9 @@ index 667ea94..ebb19d6 100644
  	lvmconfigparser.mli lvmconfigparser.ml
  	rm -f test_allocator
  
-diff --git a/netdev/Makefile b/netdev/Makefile
-index f985f47..3f471cd 100644
 --- a/netdev/Makefile
 +++ b/netdev/Makefile
-@@ -44,7 +44,7 @@ META: META.in
+@@ -44,7 +44,7 @@
  install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
  install: $(LIBS) META
  	mkdir -p $(path)
@@ -182,18 +162,16 @@ index f985f47..3f471cd 100644
  
  .PHONY: uninstall
  uninstall:
-@@ -55,5 +55,5 @@ doc: $(INTF)
+@@ -55,5 +55,5 @@
  	python ../doc/doc.py $(DOCDIR) "netdev" "package" "$(OBJS)" "." "" ""
  
  clean:
 -	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot *.sp?t $(LIBS) $(PROGRAMS)
 +	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot $(SPOT) $(LIBS) $(PROGRAMS)
  
-diff --git a/pciutil/Makefile b/pciutil/Makefile
-index d18e993..2d672eb 100644
 --- a/pciutil/Makefile
 +++ b/pciutil/Makefile
-@@ -43,7 +43,7 @@ META: META.in
+@@ -43,7 +43,7 @@
  install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
  install: $(LIBS) META
  	mkdir -p $(path)
@@ -202,17 +180,15 @@ index d18e993..2d672eb 100644
  
  .PHONY: bininstall
  bininstall: path = $(DESTDIR)$(LIBEXEC)
-@@ -64,4 +64,4 @@ doc: $(INTF)
+@@ -64,4 +64,4 @@
  	python ../doc/doc.py $(DOCDIR) "pciutil" "package" "$(OBJS)" "." "stdext" ""
  
  clean:
 -	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot *.sp?t $(LIBS) $(PROGRAMS)
 +	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot $(SPOT) $(LIBS) $(PROGRAMS)
-diff --git a/rpc-light/Makefile b/rpc-light/Makefile
-index a84916d..39e29fe 100644
 --- a/rpc-light/Makefile
 +++ b/rpc-light/Makefile
-@@ -43,7 +43,7 @@ p4_idl.cmo: p4_idl.ml p4_rpc.cmo
+@@ -43,7 +43,7 @@
  .PHONY: install
  install: INSTALL_PATH = $(DESTDIR)$(shell ocamlfind printconf destdir)
  install: all
@@ -221,17 +197,15 @@ index a84916d..39e29fe 100644
  
  .PHONY: uninstall
  uninstall:
-@@ -54,4 +54,4 @@ doc: $(INTF)
+@@ -54,4 +54,4 @@
  	python ../doc/doc.py $(DOCDIR) "rpc-light" "package" "jsonrpc pa_rpc rpc xmlrpc" "." "xmlm" ""
  
  clean:
 -	rm -f *.cmo *.cmx *.cma *.cmxa *.annot *.sp?t *.o *.cmi *.a
 +	rm -f *.cmo *.cmx *.cma *.cmxa *.annot $(SPOT) *.o *.cmi *.a
-diff --git a/rss/Makefile b/rss/Makefile
-index af3495b..9447509 100644
 --- a/rss/Makefile
 +++ b/rss/Makefile
-@@ -40,7 +40,7 @@ META: META.in
+@@ -40,7 +40,7 @@
  install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
  install: $(LIBS) META
  	mkdir -p $(path)
@@ -240,17 +214,15 @@ index af3495b..9447509 100644
  
  .PHONY: uninstall
  uninstall:
-@@ -51,4 +51,4 @@ doc: $(INTF)
+@@ -51,4 +51,4 @@
  	python ../doc/doc.py $(DOCDIR) "rss" "package" "$(OBJS)" "." "xml-light2" ""
  
  clean:
 -	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot *.sp?t $(LIBS) $(PROGRAMS)
 +	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot $(SPOT) $(LIBS) $(PROGRAMS)
-diff --git a/sexpr/Makefile b/sexpr/Makefile
-index fc492e7..aae821a 100644
 --- a/sexpr/Makefile
 +++ b/sexpr/Makefile
-@@ -55,7 +55,7 @@ META: META.in
+@@ -55,7 +55,7 @@
  install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
  install: $(LIBS) META
  	mkdir -p $(path)
@@ -259,17 +231,15 @@ index fc492e7..aae821a 100644
  
  .PHONY: bininstall
  bininstall: path = $(DESTDIR)$(LIBEXEC)
-@@ -76,4 +76,4 @@ doc: $(INTF)
+@@ -76,4 +76,4 @@
  	python ../doc/doc.py $(DOCDIR) "sexpr" "package" "$(OBJS)" "." "stdext" ""
  
  clean:
 -	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot *.sp?t sExprLexer.ml{,i} sExprParser.ml{,i} $(LIBS) $(PROGRAMS)
 +	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot $(SPOT) sExprLexer.ml{,i} sExprParser.ml{,i} $(LIBS) $(PROGRAMS)
-diff --git a/stdext/Makefile b/stdext/Makefile
-index 907699c..27d2d12 100644
 --- a/stdext/Makefile
 +++ b/stdext/Makefile
-@@ -147,7 +147,7 @@ META: META.in
+@@ -147,7 +147,7 @@
  install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
  install: $(LIBS) META
  	mkdir -p $(path)
@@ -278,7 +248,7 @@ index 907699c..27d2d12 100644
  
  .PHONY: bininstall
  bininstall: path = $(DESTDIR)$(LIBEXEC)
-@@ -168,7 +168,7 @@ doc: $(INTF)
+@@ -168,7 +168,7 @@
  	python ../doc/doc.py $(DOCDIR) "stdext" "package" "$(STDEXT_OBJS)" "." "threads,uuid,unix" ""
  
  clean:
@@ -287,11 +257,9 @@ index 907699c..27d2d12 100644
  
  #dependency:
  
-diff --git a/stunnel/Makefile b/stunnel/Makefile
-index 4b44141..1e3e686 100644
 --- a/stunnel/Makefile
 +++ b/stunnel/Makefile
-@@ -40,7 +40,7 @@ META: META.in
+@@ -40,7 +40,7 @@
  install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
  install: $(LIBS) META
  	mkdir -p $(path)
@@ -300,17 +268,15 @@ index 4b44141..1e3e686 100644
  
  .PHONY: uninstall
  uninstall:
-@@ -51,4 +51,4 @@ doc: $(INTF)
+@@ -51,4 +51,4 @@
  	python ../doc/doc.py $(DOCDIR) "stunnel" "package" "$(OBJS)" "." "stdext,log" ""
  
  clean:
 -	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot *.sp?t $(LIBS) $(PROGRAMS)
 +	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot $(SPOT) $(LIBS) $(PROGRAMS)
-diff --git a/tapctl/Makefile b/tapctl/Makefile
-index f63b47a..e5c0863 100644
 --- a/tapctl/Makefile
 +++ b/tapctl/Makefile
-@@ -39,7 +39,7 @@ META: META.in
+@@ -39,7 +39,7 @@
  install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
  install: $(LIBS) META
  	mkdir -p $(path)
@@ -319,17 +285,15 @@ index f63b47a..e5c0863 100644
  
  .PHONY: uninstall
  uninstall:
-@@ -50,4 +50,4 @@ doc: $(INTF)
+@@ -50,4 +50,4 @@
  	python ../doc/doc.py $(DOCDIR) "tapctl" "package" "$(OBJS)" "." "" ""
  
  clean:
 -	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot *.sp?t $(LIBS) $(PROGRAMS)
 +	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot $(SPOT) $(LIBS) $(PROGRAMS)
-diff --git a/tests/Makefile b/tests/Makefile
-index 3c5e890..7e51f18 100644
 --- a/tests/Makefile
 +++ b/tests/Makefile
-@@ -20,7 +20,7 @@ dotdot: dotdot.cmo
+@@ -20,7 +20,7 @@
  	$(OCAMLC) -linkpkg -custom -o $@ $<
  
  clean:
@@ -338,11 +302,9 @@ index 3c5e890..7e51f18 100644
  
  %.cmo: %.ml
  	$(OCAMLC) -c -o $@ $<
-diff --git a/udev/Makefile b/udev/Makefile
-index 9e745ef..0315b19 100644
 --- a/udev/Makefile
 +++ b/udev/Makefile
-@@ -47,7 +47,7 @@ META: META.in
+@@ -47,7 +47,7 @@
  install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
  install: $(LIBS) META
  	mkdir -p $(path)
@@ -351,18 +313,16 @@ index 9e745ef..0315b19 100644
  
  .PHONY: uninstall
  uninstall:
-@@ -58,5 +58,5 @@ doc: $(INTF)
+@@ -58,5 +58,5 @@
  	python ../doc/doc.py $(DOCDIR) "udev" "package" "$(OBJS)" "." "" ""
  
  clean:
 -	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot *.sp?t $(LIBS) $(PROGRAMS)
 +	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot $(SPOT) $(LIBS) $(PROGRAMS)
  
-diff --git a/uuid/Makefile b/uuid/Makefile
-index 3e22f91..e7dd3b8 100644
 --- a/uuid/Makefile
 +++ b/uuid/Makefile
-@@ -40,7 +40,7 @@ META: META.in
+@@ -40,7 +40,7 @@
  install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
  install: $(LIBS) META
  	mkdir -p $(path)
@@ -371,7 +331,7 @@ index 3e22f91..e7dd3b8 100644
  
  .PHONY: uninstall
  uninstall:
-@@ -51,5 +51,8 @@ doc: $(INTF)
+@@ -51,5 +51,8 @@
  	python ../doc/doc.py $(DOCDIR) "uuid" "package" "$(OBJS)" "." "" ""
  
  clean:
@@ -382,11 +342,9 @@ index 3e22f91..e7dd3b8 100644
 +blah:
 +	echo $(SPOT)
 \ No newline at end of file
-diff --git a/vhd/Makefile b/vhd/Makefile
-index ceed32d..971c6e1 100644
 --- a/vhd/Makefile
 +++ b/vhd/Makefile
-@@ -48,7 +48,7 @@ META: META.in
+@@ -48,7 +48,7 @@
  
  .PHONY: install
  install: $(LIBS) META
@@ -395,17 +353,15 @@ index ceed32d..971c6e1 100644
  
  .PHONY: uninstall
  uninstall:
-@@ -59,4 +59,4 @@ doc: $(INTF)
+@@ -59,4 +59,4 @@
  	python ../doc/doc.py $(DOCDIR) "vhd" "package" "$(OBJS)" "." "" ""
  
  clean:
 -	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot *.sp?t $(LIBS) $(PROGRAMS)
 +	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot $(SPOT) $(LIBS) $(PROGRAMS)
-diff --git a/xen-utils/Makefile b/xen-utils/Makefile
-index 3c3f1e4..613706c 100644
 --- a/xen-utils/Makefile
 +++ b/xen-utils/Makefile
-@@ -41,7 +41,7 @@ META: META.in
+@@ -41,7 +41,7 @@
  install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
  install: $(LIBS) META
  	mkdir -p $(path)
@@ -414,18 +370,16 @@ index 3c3f1e4..613706c 100644
  
  .PHONY: uninstall
  uninstall:
-@@ -52,5 +52,5 @@ doc: $(INTF)
+@@ -52,5 +52,5 @@
  	python ../doc/doc.py $(DOCDIR) "xen-utils" "package" "$(OBJS)" "." "stdext" ""
  
  clean:
 -	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot *.sp?t $(LIBS) $(PROGRAMS)
 +	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot $(SPOT) $(LIBS) $(PROGRAMS)
  
-diff --git a/xml-light2/Makefile b/xml-light2/Makefile
-index acfe96a..0a4fcbe 100644
 --- a/xml-light2/Makefile
 +++ b/xml-light2/Makefile
-@@ -45,7 +45,7 @@ META: META.in
+@@ -45,7 +45,7 @@
  install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
  install: $(LIBS) META
  	mkdir -p $(path)
@@ -434,18 +388,16 @@ index acfe96a..0a4fcbe 100644
  
  .PHONY: bininstall
  bininstall: path = $(DESTDIR)$(LIBEXEC)
-@@ -66,5 +66,5 @@ doc: $(INTF)
+@@ -66,5 +66,5 @@
  	python ../doc/doc.py $(DOCDIR) "xml-light2" "package" "$(OBJS)" "." "stdext,xmlm" ""
  
  clean:
 -	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot *.sp?t $(LIBS) $(PROGRAMS)
 +	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot $(SPOT) $(LIBS) $(PROGRAMS)
  
-diff --git a/xsrpc/Makefile b/xsrpc/Makefile
-index 79ca8c2..dda80c1 100644
 --- a/xsrpc/Makefile
 +++ b/xsrpc/Makefile
-@@ -40,7 +40,7 @@ META: META.in
+@@ -40,7 +40,7 @@
  install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
  install: $(LIBS) META
  	mkdir -p $(path)
@@ -454,7 +406,7 @@ index 79ca8c2..dda80c1 100644
  
  .PHONY: uninstall
  uninstall:
-@@ -51,5 +51,5 @@ doc: $(INTF)
+@@ -51,5 +51,5 @@
  	python ../doc/doc.py $(DOCDIR) "xsrpc" "package" "$(OBJS)" "." "xb,xs" ""
  
  clean:
