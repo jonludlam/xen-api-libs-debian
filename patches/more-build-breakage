@@ -44,14 +44,14 @@ Date:   Thu Jul 7 13:49:08 2011 +0100
  bins: $(PROGRAMS)
 --- a/vhd/Makefile
 +++ b/vhd/Makefile
-@@ -11,6 +11,7 @@
- INTF = $(foreach obj, $(OBJS),$(obj).cmi)
- LIBS = vhd.cma vhd.cmxa
+@@ -3,6 +3,7 @@
+ 
+ OCAMLFIND = ocamlfind
  
 +CFLAGS = -D_LARGEFILE64_SOURCE -D_GNU_SOURCE
  
- all: $(INTF) $(LIBS) $(PROGRAMS)
- 
+ DESTDIR ?= /
+ OCAMLFLAGS = -g -dtypes 
 @@ -19,10 +20,10 @@
  libs: $(LIBS)
  
