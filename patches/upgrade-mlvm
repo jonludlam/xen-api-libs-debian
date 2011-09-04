@@ -14,6 +14,15 @@ Date:   Fri Jul 1 13:38:03 2011 +0100
  INTF = $(foreach obj, $(LIBOBJS),$(obj).cmi)
  CMDOBJS = messages.cmx mlvm.cmx
  COMPFLAG = -package uuid -dtypes -g -I ../stdext -I ../camldm -for-pack Lvm $(RPCLIGHTFLAGS)
+@@ -36,7 +36,7 @@
+ 	ocamlfind remove lvm
+ 
+ clean : 
+-	rm -f *.cmo *.cmi *.cmx *.o *~ *.annot $(SPOT) lvmconfiglex.ml \
++	rm -f *.cmo *.cmi *.cmx *.o *~ *.cma *.cmxa *.a *.annot $(SPOT) lvmconfiglex.ml \
+ 	lvmconfigparser.mli lvmconfigparser.ml
+ 	rm -f test_allocator
+ 
 @@ -72,5 +72,18 @@
  pv.cmx: utils.cmx lvmmarshal.cmx lvm_uuid.cmx crc.cmx constants.cmx allocator.cmx absty.cmx
  vg.cmo: debug.cmo pv.cmo lvm_uuid.cmo lv.cmo allocator.cmo absty.cmo
