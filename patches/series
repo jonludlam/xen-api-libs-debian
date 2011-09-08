@@ -13,3 +13,4 @@ more-build-breakage
 makefile-patch
 fix-install-location
 fe-init-script
+nice-path
