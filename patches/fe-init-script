@@ -255,7 +255,7 @@
  
  INIT_D   = /etc/rc.d/init.d
  
-@@ -45,10 +46,8 @@
+@@ -40,10 +41,8 @@
  .PHONY: bininstall
  bininstall: path = $(DESTDIR)$(LIBEXEC)
  bininstall: all

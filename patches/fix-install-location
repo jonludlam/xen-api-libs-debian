@@ -126,7 +126,7 @@
  	ocamlfind install -destdir $(path) -ldconf ignore sexpr META $(INTF) $(LIBS) *.a *.cmx $(SPOT)
 --- a/stdext/Makefile
 +++ b/stdext/Makefile
-@@ -150,7 +150,7 @@
+@@ -144,7 +144,7 @@
  	sed 's/@VERSION@/$(VERSION)/g' < $< > $@
  
  .PHONY: install
@@ -137,7 +137,7 @@
  	ocamlfind install -destdir $(path) -ldconf ignore stdext META $(INTF) $(LIBS) *.a *.so *.cmx $(SPOT)
 --- a/stunnel/Makefile
 +++ b/stunnel/Makefile
-@@ -42,7 +42,7 @@
+@@ -37,7 +37,7 @@
  	sed 's/@VERSION@/$(VERSION)/g' < $< > $@
  
  .PHONY: install
@@ -170,7 +170,7 @@
  	ocamlfind install -destdir $(path) -ldconf ignore udev META $(INTF) $(LIBS) *.a *.so *.cmx $(SPOT)
 --- a/vhd/Makefile
 +++ b/vhd/Makefile
-@@ -49,7 +49,7 @@
+@@ -47,7 +47,7 @@
  
  .PHONY: install
  install: $(LIBS) META
@@ -201,17 +201,6 @@
  install: $(LIBS) META
  	mkdir -p $(path)
  	ocamlfind install -destdir $(path) -ldconf ignore xml-light2 META $(INTF) $(LIBS) *.a *.cmx $(SPOT)
---- a/xsrpc/Makefile
-+++ b/xsrpc/Makefile
-@@ -35,7 +35,7 @@
- 	sed 's/@VERSION@/$(VERSION)/g' < $< > $@
- 
- .PHONY: install
--install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
-+install: path = $(DESTDIR)$(shell ocamlc -where)
- install: $(LIBS) META
- 	mkdir -p $(path)
- 	ocamlfind install -destdir $(path) -ldconf ignore xsrpc META $(INTF) $(LIBS) *.a *.cmx $(SPOT)
 --- a/Makefile.in
 +++ b/Makefile.in
 @@ -4,6 +4,7 @@

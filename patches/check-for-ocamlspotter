@@ -59,7 +59,7 @@ Date:   Tue Jun 28 18:27:59 2011 +0100
 +	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot $(SPOT) $(LIBS) $(PROGRAMS)
 --- a/config.mk.in
 +++ b/config.mk.in
-@@ -32,4 +32,9 @@
+@@ -32,4 +32,6 @@
  
  DOCDIR = ../doc
  
@@ -67,11 +67,7 @@ Date:   Tue Jun 28 18:27:59 2011 +0100
 \ No newline at end of file
 +LIBEXEC = "/opt/xensource/libexec"
 +
-+HAVESPOT = $(shell ocaml -version | grep spotter | wc -l)
-+ifeq ($(HAVESPOT), 1)
-+     SPOT = *.sp?t
-+endif
-\ No newline at end of file
++SPOT=$(wildcard *.sp?t)
 --- a/cpuid/Makefile
 +++ b/cpuid/Makefile
 @@ -44,7 +44,7 @@
@@ -344,7 +340,7 @@ Date:   Tue Jun 28 18:27:59 2011 +0100
 \ No newline at end of file
 --- a/vhd/Makefile
 +++ b/vhd/Makefile
-@@ -48,7 +48,7 @@
+@@ -47,7 +47,7 @@
  
  .PHONY: install
  install: $(LIBS) META
@@ -353,7 +349,7 @@ Date:   Tue Jun 28 18:27:59 2011 +0100
  
  .PHONY: uninstall
  uninstall:
-@@ -59,4 +59,4 @@
+@@ -58,4 +58,4 @@
  	python ../doc/doc.py $(DOCDIR) "vhd" "package" "$(OBJS)" "." "" ""
  
  clean:
@@ -394,22 +390,4 @@ Date:   Tue Jun 28 18:27:59 2011 +0100
  clean:
 -	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot *.sp?t $(LIBS) $(PROGRAMS)
 +	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot $(SPOT) $(LIBS) $(PROGRAMS)
- 
---- a/xsrpc/Makefile
-+++ b/xsrpc/Makefile
-@@ -40,7 +40,7 @@
- install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
- install: $(LIBS) META
- 	mkdir -p $(path)
--	ocamlfind install -destdir $(path) -ldconf ignore xsrpc META $(INTF) $(LIBS) *.a *.cmx *.sp?t
-+	ocamlfind install -destdir $(path) -ldconf ignore xsrpc META $(INTF) $(LIBS) *.a *.cmx $(SPOT)
- 
- .PHONY: uninstall
- uninstall:
-@@ -51,5 +51,5 @@
- 	python ../doc/doc.py $(DOCDIR) "xsrpc" "package" "$(OBJS)" "." "xb,xs" ""
- 
- clean:
--	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot *.sp?t META $(LIBS) $(PROGRAMS)
-+	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot $(SPOT) META $(LIBS) $(PROGRAMS)
  

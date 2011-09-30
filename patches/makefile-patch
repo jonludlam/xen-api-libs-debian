@@ -1,24 +1,17 @@
 --- a/Makefile.in
 +++ b/Makefile.in
-@@ -7,12 +7,13 @@
+@@ -7,6 +7,10 @@
  
  include config.mk
  
--STUBLIBDIR = $(DESTDIR)$(shell ocamlc -where)/stublibs
--$(STUBLIBDIR):
--	mkdir -p $@
-+
 +.PHONY: default
 +default: all allxen bins
 +	@:
- 
++
  .PHONY: all
--all:
-+all: 
+ all:
  ifeq ($(HAVE_TYPECONV),type-conv)
- 	$(MAKE) -C rpc-light
- endif
-@@ -40,7 +41,7 @@
+@@ -37,7 +41,7 @@
  	$(MAKE) -C xen-utils
  
  .PHONY: allxen
@@ -26,26 +19,26 @@
 +allxen: all
  ifeq ($(HAVE_XEN),1)
  	$(MAKE) -C netdev
- 	$(MAKE) -C xsrpc
-@@ -49,7 +50,7 @@
+ 	$(MAKE) -C cpuid
+@@ -45,7 +49,7 @@
  	$(MAKE) -C tapctl
  endif
  
--install: $(STUBLIBDIR)
+-install:
 +install: $(STUBLIBDIR) installxen bininstall
+ 	$(MAKE) -C uuid install
  	$(MAKE) -C stdext install
  	$(MAKE) -C log install
- 	$(MAKE) -C stunnel install
-@@ -166,7 +167,7 @@
+@@ -162,7 +166,7 @@
  	$(MAKE) -C xen-utils doc
  
  .PHONY: clean
 -clean:
 +clean: cleanxen
+ 	$(MAKE) -C uuid clean
  	$(MAKE) -C camldm clean
  	$(MAKE) -C stdext clean
- 	$(MAKE) -C log clean
-@@ -192,6 +193,10 @@
+@@ -188,6 +192,10 @@
  	$(MAKE) -C vhd clean
  	$(MAKE) -C tapctl clean
  
@@ -56,25 +49,3 @@
  RPM_SPECSDIR=$(shell rpm --eval='%_specdir')
  RPM_SOURCEDIR=$(shell rpm --eval='%_sourcedir')
  XEN_RELEASE=xcp0.2
---- a/pciutil/Makefile
-+++ b/pciutil/Makefile
-@@ -16,7 +16,7 @@
- libs: $(LIBS)
- 
- pciutil: pciutil_main.cmx
--	$(OCAMLOPT) $(OCAMLOPTFLAGS) -I ./ -I ../stdext unix.cmxa stdext.cmxa pciutil.cmx -o $@ $^
-+	$(OCAMLOPT) $(OCAMLOPTFLAGS) -package uuid -linkpkg -I ./ -I ../stdext unix.cmxa stdext.cmxa pciutil.cmx -o $@ $^
- 
- pciutil.cmxa: $(foreach obj,$(OBJS),$(obj).cmx)
- 	$(OCAMLOPT) $(OCAMLOPTFLAGS) -a -o $@ $(foreach obj,$(OBJS),$(obj).cmx)
---- a/close-and-exec/Makefile
-+++ b/close-and-exec/Makefile
-@@ -16,7 +16,7 @@
- libs: $(LIBS)
- 
- closeandexec: closeandexec.cmxa closeandexec_main.cmx all
--	$(OCAMLOPT) $(OCAMLOPTFLAGS) -thread -I ../stdext unix.cmxa threads.cmxa stdext.cmxa closeandexec.cmxa closeandexec_main.cmx -o $@
-+	$(OCAMLOPT) $(OCAMLOPTFLAGS) -package uuid,threads -linkpkg -thread -I ../stdext stdext.cmxa closeandexec.cmxa closeandexec_main.cmx -o $@
- 
- closeandexec.cmxa: $(foreach obj,$(OBJS),$(obj).cmx)
- 	$(OCAMLOPT) $(OCAMLOPTFLAGS) -a -o $@ $(foreach obj,$(OBJS),$(obj).cmx)

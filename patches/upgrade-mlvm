@@ -13,7 +13,7 @@ Date:   Fri Jul 1 13:38:03 2011 +0100
 +LIBOBJS = constants lvm_uuid crc utils tag absty lvmconfigparser lvmconfiglex lvmmarshal allocator debug redo lv pv vg 
  INTF = $(foreach obj, $(LIBOBJS),$(obj).cmi)
  CMDOBJS = messages.cmx mlvm.cmx
- COMPFLAG = -package uuid -dtypes -g -I ../stdext -I ../camldm -for-pack Lvm $(RPCLIGHTFLAGS)
+ COMPFLAG = -dtypes -g -I ../stdext -I ../camldm -I ../uuid -for-pack Lvm $(RPCLIGHTFLAGS)
 @@ -36,7 +36,7 @@
  	ocamlfind remove lvm
  
@@ -23,17 +23,15 @@ Date:   Fri Jul 1 13:38:03 2011 +0100
  	lvmconfigparser.mli lvmconfigparser.ml
  	rm -f test_allocator
  
-@@ -72,5 +72,18 @@
- pv.cmx: utils.cmx lvmmarshal.cmx lvm_uuid.cmx crc.cmx constants.cmx allocator.cmx absty.cmx
- vg.cmo: debug.cmo pv.cmo lvm_uuid.cmo lv.cmo allocator.cmo absty.cmo
- vg.cmx: debug.cmx pv.cmx lvm_uuid.cmx lv.cmx allocator.cmx absty.cmx
--redo.cmo: debug.cmo allocator.cmo
--redo.cmx: debug.cmx allocator.cmx
+@@ -77,4 +77,18 @@
+     allocator.cmx absty.cmx 
+ vg.cmo: debug.cmo pv.cmo lvm_uuid.cmo lv.cmo allocator.cmo absty.cmo 
+ vg.cmx: debug.cmx pv.cmx lvm_uuid.cmx lv.cmx allocator.cmx absty.cmx 
 +redo.cmo: tag.cmi debug.cmo allocator.cmo
 +redo.cmx: tag.cmx debug.cmx allocator.cmx
 +tag.cmo: debug.cmo tag.cmi
 +tag.cmx: debug.cmx tag.cmi
-+
+ 
 +test_allocator: default
 +	$(OCAMLOPT) -package kaputt -linkpkg -dtypes -g  -I ../stdext -I ../camldm -I ../uuid -I +kaputt $(INCLUDES) ./lvm.cmxa test_allocator.ml -o $@
 +
