@@ -243,3 +243,21 @@
  
  .PHONY: uninstall
  uninstall:
+--- a/uuid/Makefile
++++ b/uuid/Makefile
+@@ -37,7 +37,7 @@
+ 	sed 's/@VERSION@/$(VERSION)/g' < $< > $@
+ 
+ .PHONY: install
+-install: path = $(DESTDIR)$(shell ocamlfind printconf destdir)
++install: path = $(DESTDIR)$(shell ocamlc -where)
+ install: $(LIBS) META
+ 	mkdir -p $(path)
+ 	ocamlfind install -destdir $(path) -ldconf ignore uuid META $(INTF) $(LIBS) *.a *.cmx $(SPOT)
+@@ -55,4 +55,4 @@
+ 
+ .PHONY: blah
+ blah:
+-	echo $(SPOT)
+\ No newline at end of file
++	echo $(SPOT)
