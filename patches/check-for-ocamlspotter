@@ -59,15 +59,13 @@ Date:   Tue Jun 28 18:27:59 2011 +0100
 +	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot $(SPOT) $(LIBS) $(PROGRAMS)
 --- a/config.mk.in
 +++ b/config.mk.in
-@@ -32,4 +32,6 @@
- 
+@@ -33,3 +33,6 @@
  DOCDIR = ../doc
  
--LIBEXEC = "/opt/xensource/libexec"
-\ No newline at end of file
-+LIBEXEC = "/opt/xensource/libexec"
+ LIBEXEC = "/opt/xensource/libexec"
 +
 +SPOT=$(wildcard *.sp?t)
++
 --- a/cpuid/Makefile
 +++ b/cpuid/Makefile
 @@ -44,7 +44,7 @@
@@ -80,7 +78,7 @@ Date:   Tue Jun 28 18:27:59 2011 +0100
  .PHONY: uninstall
  uninstall:
 @@ -55,5 +55,5 @@
- 	python ../doc/doc.py $(DOCDIR) "cpuid" "package" "$(OBJS)" "." "stdext xc xen-utils" ""
+ 	python ../doc/doc.py $(DOCDIR) "cpuid" "package" "$(OBJS)" "." "stdext xenctrl xen-utils" ""
  
  clean:
 -	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot *.sp?t $(LIBS) $(PROGRAMS) *~ *.rej

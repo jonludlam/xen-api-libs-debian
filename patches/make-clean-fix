@@ -25,7 +25,7 @@
 --- a/cpuid/Makefile
 +++ b/cpuid/Makefile
 @@ -55,5 +55,5 @@
- 	python ../doc/doc.py $(DOCDIR) "cpuid" "package" "$(OBJS)" "." "stdext xc xen-utils" ""
+ 	python ../doc/doc.py $(DOCDIR) "cpuid" "package" "$(OBJS)" "." "stdext xenctrl xen-utils" ""
  
  clean:
 -	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot $(SPOT) $(LIBS) $(PROGRAMS) *~ *.rej

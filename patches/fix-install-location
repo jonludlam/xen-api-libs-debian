@@ -213,13 +213,14 @@
  
 --- a/config.mk.in
 +++ b/config.mk.in
-@@ -33,5 +33,6 @@
+@@ -33,6 +33,7 @@
  DOCDIR = ../doc
  
  LIBEXEC = "/opt/xensource/libexec"
 +BINDIR = "/usr/bin"
  
  SPOT=$(wildcard *.sp?t)
+ 
 --- a/camldm/Makefile
 +++ b/camldm/Makefile
 @@ -41,7 +41,7 @@
