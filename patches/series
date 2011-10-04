@@ -1,3 +1,4 @@
+rename-xen-packages
 expose-xmlrpc-nil-marshaller
 check-for-ocamlspotter
 upgrade-mlvm
