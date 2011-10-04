@@ -1,5 +1,3 @@
-diff --git a/config.mk.in b/config.mk.in
-index 5765cfd..ff3dce2 100644
 --- a/config.mk.in
 +++ b/config.mk.in
 @@ -1,6 +1,6 @@
@@ -12,18 +10,16 @@ index 5765cfd..ff3dce2 100644
  
  OCAML_XB_INC = -I $(OCAML_XB_DIR)
  OCAML_XB_LIB = $(OCAML_XB_DIR)/xb.cmxa
-@@ -32,4 +32,4 @@ RPCLIGHTFLAGS = -package camlp4,type-conv -ppopt -I -ppopt /usr/lib/ocaml/type-c
+@@ -32,4 +32,4 @@
  
  DOCDIR = ../doc
  
 -LIBEXEC = "/opt/xensource/libexec"
 \ No newline at end of file
 +LIBEXEC = "/opt/xensource/libexec"
-diff --git a/cpuid/Makefile b/cpuid/Makefile
-index 5cfb91f..e226679 100644
 --- a/cpuid/Makefile
 +++ b/cpuid/Makefile
-@@ -52,7 +52,7 @@ uninstall:
+@@ -52,7 +52,7 @@
  
  .PHONY: doc
  doc: $(INTF)
@@ -32,3 +28,12 @@ index 5cfb91f..e226679 100644
  
  clean:
  	rm -f *.o *.so *.a *.cmo *.cmi *.cma *.cmx *.cmxa *.annot *.sp?t $(LIBS) $(PROGRAMS) *~ *.rej
+--- a/cpuid/META.in
++++ b/cpuid/META.in
+@@ -1,5 +1,5 @@
+ version = "@VERSION@"
+ description = "Cpuid extension"
+-requires = "stdext xc xen-utils"
++requires = "stdext xenctrl xen-utils"
+ archive(byte) = "cpuid.cma"
+ archive(native) = "cpuid.cmxa"
