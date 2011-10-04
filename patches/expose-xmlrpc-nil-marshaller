@@ -1,0 +1,23 @@
+--- a/http-svr/xMLRPC.ml
++++ b/http-svr/xMLRPC.ml
+@@ -51,6 +51,8 @@
+ 
+   let value v = box "value" [v]
+ 
++  let nil () = value (box "nil" [])
++
+   let name v = box "name" [pcdata v]
+ 
+   let array vs = value (box "array" [box "data" vs])
+--- a/http-svr/xMLRPC.mli
++++ b/http-svr/xMLRPC.mli
+@@ -45,6 +45,9 @@
+ 
+ (** Functions to marshal OCaml values to our subset of XML-RPC. *)
+ module To : sig
++    (** Marshal a nil value *)
++  val nil : unit -> xmlrpc
++
+     (** Marshal a homogeneous array. *)
+   val array : xmlrpc list -> xmlrpc
+ 
