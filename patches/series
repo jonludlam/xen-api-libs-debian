@@ -1,10 +1,3 @@
-rename-xen-packages
-expose-xmlrpc-nil-marshaller
-check-for-ocamlspotter
-upgrade-mlvm
-stdext-improvements
-makefile-patch
-make-clean-fix
 no-get-boot-cpufeatures
 type-conv-2.3
 fix-vhd-build
