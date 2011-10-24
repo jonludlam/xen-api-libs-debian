@@ -4,3 +4,4 @@ fix-vhd-build
 fix-install-location
 fe-init-script
 nice-path
+new-ocaml-packaging
