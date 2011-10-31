@@ -1,7 +1,6 @@
 no-get-boot-cpufeatures
 type-conv-2.3
 fix-vhd-build
-fix-install-location
 fe-init-script
 nice-path
 new-ocaml-packaging
