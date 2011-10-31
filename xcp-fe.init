@@ -6,8 +6,7 @@
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: Fork-and-exec daemon
-# Description:       This is a daemon required by xapi to fork and execute
-# 
+# Description:       This is a daemon required by xapi to fork and execute binaries
 ### END INIT INFO
 
 # Author: Jon Ludlam <jonathan.ludlam@eu.citrix.com>

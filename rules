@@ -11,11 +11,15 @@
 # build-arch and build-indep targets  by Bill Allombert 2001
 
 # Uncomment this to turn on verbose mode.
-#export DH_VERBOSE=1
+export DH_VERBOSE=1
 
 # This has to be exported to make some magic below work.
 export DH_OPTIONS
 
+include /usr/share/ocaml/ocamlvars.mk
+
+export DESTDIR=$(CURDIR)/debian/tmp
+export OCAMLDESTDIR=$(DESTDIR)/$(OCAML_STDLIB_DIR)/xcp
 
 %:
-	dh $@ --with autoreconf
+	dh $@ --with autoreconf,ocaml
